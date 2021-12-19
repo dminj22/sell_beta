@@ -3,6 +3,7 @@ import 'package:sell_beta_customer/Config/icon_config.dart';
 import 'package:sell_beta_customer/Screen/Product/Cart/cart_page.dart';
 import 'package:sell_beta_customer/Screen/Tabs/account_page.dart';
 import 'package:sell_beta_customer/Screen/Tabs/home_page.dart';
+import 'package:sell_beta_customer/Screen/Vendor_store/vendor_home.dart';
 
 
 class Home extends StatefulWidget {
@@ -21,10 +22,7 @@ class _HomeState extends State<Home> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
+    VendorHomePage(),
     Text(
       'Index 2: School',
       style: optionStyle,

@@ -830,8 +830,9 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                                   ViewSingleProductPage(
                                                                     productId: prod
                                                                         .productId,
-                                                                    vendorId: widget
+                                                                    vendorId: prod
                                                                         .vendorId,
+                                                                    subCatId: prod.subCategory,
                                                                   )));
                                                     },
                                                     child: Container(
@@ -1056,6 +1057,8 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                             ViewSingleProductPage(
                                                               productId: rData
                                                                   .productId,
+                                                              subCatId: rData.subCategory,
+                                                              vendorId: rData.vendorId,
                                                             )));
                                               },
                                               child: Container(
