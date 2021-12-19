@@ -9,6 +9,7 @@ import 'package:sell_beta_customer/Api/model/add_to_cart_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Component/bottom_sheet/delivery.dart';
 import 'package:sell_beta_customer/Component/bottom_sheet/service.dart';
+import 'package:sell_beta_customer/Config/theme.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -38,6 +39,10 @@ class ViewSingleProductPage extends StatefulWidget {
 class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
   final CarouselController _controller = CarouselController();
   int _current = 0;
+
+  int? selectedSize;
+
+  var selectedColor;
 
   _addToCart(userId, prodId, price, vendorId) async {
     try {
@@ -81,7 +86,6 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
     var user = Provider.of<UserProvider>(context);
     var font1 = GoogleFonts.inter(fontWeight: FontWeight.bold);
     var font2 = GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 10);
-    print("${widget.subCatId}???????????");
 
     return Scaffold(
       body: FutureBuilder(
@@ -91,7 +95,8 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
             getShopProduct(4),
             getCartList(user.userId),
             getVendorDetails(widget.vendorId),
-            productReview(widget.productId)
+            productReview(widget.productId),
+            getRelatedProduct(widget.subCatId)
           ]),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
@@ -100,14 +105,19 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
               var pro = snapshot.data[2].data;
               var vendor = snapshot.data[4].data;
               var review = snapshot.data[5].data;
+              var relPro = snapshot.data[6].data;
               var image = [];
-              var des;
 
               if (data != null && item != null) {
                 var a = item.map((i) => {image.add(i.imgUrl)});
                 print(a);
-
               }
+
+              print(
+                  "Product Data = ${snapshot.data[0].status}\n Image Data = ${snapshot.data[1].status} \n Vendor Product Data = ${snapshot.data[2].status} \n"
+                  "Vendor Detail Data = ${snapshot.data[4].status} \n Review Data = ${snapshot.data[5].status} \n Related Products Data = ${snapshot.data[6].status} \n"
+                  "");
+
               return data != null
                   ? Scaffold(
                       backgroundColor: Color(0xffE5E5E5),
@@ -142,8 +152,8 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                             Expanded(
                               child: CustomButtons(
                                 onPressed: () {
-                                  _addToCart(user.userId, widget.productId,
-                                      widget.price, widget.vendorId);
+                                  // _addToCart(user.userId, widget.productId,
+                                  //     widget.price, widget.vendorId);
                                 },
                                 text: "Add to Cart",
                                 color: [Color(0xffF15741), Color(0xffF29F46)],
@@ -172,30 +182,38 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                 height: height / 2,
                                 child: Column(children: [
                                   Stack(
+                                    alignment: Alignment.center,
                                     children: [
-                                      CarouselSlider(
-                                        items: image
-                                            .map((item) => Container(
-                                                  child: Container(
-                                                    height: height / 2,
-                                                    decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            fit: BoxFit.contain,
-                                                            image: NetworkImage(
-                                                                item))),
-                                                  ),
-                                                ))
-                                            .toList(),
-                                        carouselController: _controller,
-                                        options: CarouselOptions(
-                                            aspectRatio: 1.0,
-                                            viewportFraction: 1.0,
-                                            onPageChanged: (index, reason) {
-                                              setState(() {
-                                                _current = index;
-                                              });
-                                            }),
-                                      ),
+                                      snapshot.data[1].status
+                                          ? CarouselSlider(
+                                              items: image
+                                                  .map((item) => Container(
+                                                        child: Container(
+                                                          height: height / 2,
+                                                          decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  fit: BoxFit
+                                                                      .contain,
+                                                                  image:
+                                                                      NetworkImage(
+                                                                          item))),
+                                                        ),
+                                                      ))
+                                                  .toList(),
+                                              carouselController: _controller,
+                                              options: CarouselOptions(
+                                                  aspectRatio: 1.0,
+                                                  viewportFraction: 1.0,
+                                                  onPageChanged:
+                                                      (index, reason) {
+                                                    setState(() {
+                                                      _current = index;
+                                                    });
+                                                  }),
+                                            )
+                                          : Center(
+                                              child:
+                                                  Text("No Image Available")),
                                       Positioned.fill(
                                         child: Align(
                                           alignment: Alignment.bottomCenter,
@@ -377,45 +395,136 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: height*.03,),
+                              SizedBox(
+                                height: height * .03,
+                              ),
                               ListTile(
                                 title: Text("${data[0].title}".toUpperCase()),
-                                subtitle: Html(data: data[0].description,),
+                                subtitle: Html(
+                                  data: data[0].description,
+                                ),
                               ),
-                              Container(child: Column(children: [
-                                ListTile(
-                                  title: Text("Variations"),
-                                  trailing: Text("View All >"),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Wrap(
-                                    children: data[0].productColors.map<Widget>((e)=> OutlineButton(onPressed: (){} , child: Text(e.color),)).toList(),
-                                  ),
-                                )
-                              ],),),
-
-                              data[0].size != ""?
-                              Container(child: Column(children: [
-                                ListTile(
-                                  title: Text("Sizes "),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Wrap(
-                                      alignment: WrapAlignment.end,
-                                      children: data[0].size.toString().split(",").asMap().entries.map((e) => Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                                        child: OutlineButton(onPressed: (){
-                                        } , child: Text("${e.value}"),),
-                                      )).toList(),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      title: Text("Variations"),
+                                      trailing: Text("View All >"),
                                     ),
-                                  ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Wrap(
+                                          children: data[0]
+                                              .productColors
+                                              .map<Widget>((e) => Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 4),
+                                                    child: OutlinedButton(
+                                                      style: ButtonStyle(
+                                                          side: MaterialStateProperty.all(BorderSide(
+                                                              color: selectedColor ==
+                                                                      e.color
+                                                                  ? Color(
+                                                                      primaryColor)
+                                                                  : Colors
+                                                                      .grey))),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          selectedColor =
+                                                              e.color;
+                                                        });
+                                                      },
+                                                      child: Text(
+                                                        e.color,
+                                                        style: GoogleFonts.poppins(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 12,
+                                                            color: selectedColor ==
+                                                                    e.color
+                                                                ? Color(
+                                                                    primaryColor)
+                                                                : Colors.grey),
+                                                      ),
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                              ],),):Container(),
-
+                              ),
+                              data[0].size != ""
+                                  ? Container(
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            title: Text("Sizes "),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Wrap(
+                                                alignment: WrapAlignment.end,
+                                                children: data[0]
+                                                    .size
+                                                    .toString()
+                                                    .split(",")
+                                                    .asMap()
+                                                    .entries
+                                                    .map((e) => Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      4),
+                                                          child: OutlinedButton(
+                                                            style: ButtonStyle(
+                                                                side: MaterialStateProperty.all(BorderSide(
+                                                                    color: selectedSize ==
+                                                                            e
+                                                                                .key
+                                                                        ? Color(
+                                                                            primaryColor)
+                                                                        : Colors
+                                                                            .grey))),
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                selectedSize =
+                                                                    e.key;
+                                                              });
+                                                            },
+                                                            child: Text(
+                                                              "${e.value}",
+                                                              style: GoogleFonts.poppins(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize: 12,
+                                                                  color: selectedSize ==
+                                                                          e.key
+                                                                      ? Color(
+                                                                          primaryColor)
+                                                                      : Colors
+                                                                          .grey),
+                                                            ),
+                                                          ),
+                                                        ))
+                                                    .toList(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
                               ListTile(
                                 onTap: () {
                                   _showDelivery();
@@ -523,13 +632,17 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                           );
                                         },
                                       ),
+                                      Divider(),
                                     ],
                                   ),
                                 )
-                              : Container(),
+                              : Container(
+                            height: 30,
+                            child: Center(child: Text("No Review")),
+                          ),
 
                           //shop Products
-                          Divider(),
+
                           pro.isNotEmpty
                               ? Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -872,200 +985,226 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                   ),
                                 )
                               : Container(),
+                          snapshot.data[6].status
+                              ? Column(
+                                  children: [
+                                    SizedBox(
+                                      height: height * .03,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                            width: 36,
+                                            child: Divider(
+                                              thickness: 2,
+                                              color: Color(primaryColor),
+                                            )),
+                                        SizedBox(
+                                          width: width * .03,
+                                        ),
+                                        Text(
+                                          "Products you may like",
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14,
+                                              color: Color(primaryColor)),
+                                        ),
+                                        SizedBox(
+                                          width: width * .03,
+                                        ),
+                                        SizedBox(
+                                            width: 36,
+                                            child: Divider(
+                                              thickness: 2,
+                                              color: Color(primaryColor),
+                                            )),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: height * .03,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 10),
+                                      child: GridView.builder(
+                                          shrinkWrap: true,
+                                          physics: ClampingScrollPhysics(),
+                                          gridDelegate:
+                                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                                                  maxCrossAxisExtent: 200,
+                                                  childAspectRatio: 1.3 / 2,
+                                                  crossAxisSpacing: 13,
+                                                  mainAxisSpacing: 16),
+                                          itemCount: relPro.length >= 5
+                                              ? 4
+                                              : relPro.length,
+                                          itemBuilder:
+                                              (BuildContext ctx, index) {
+                                            var rData = relPro[index];
+                                            print(pro.length);
 
-                          // FutureBuilder(
-                          //     future: getRelatedProduct(widget.productId),
-                          //     builder:
-                          //         (BuildContext context, AsyncSnapshot snapshot) {
-                          //       if (snapshot.hasData) {
-                          //         var rData = snapshot.data.data;
-                          //         return Padding(
-                          //           padding: const EdgeInsets.symmetric(
-                          //               horizontal: 10, vertical: 10),
-                          //           child: GridView.builder(
-                          //               shrinkWrap: true,
-                          //               physics: ClampingScrollPhysics(),
-                          //               gridDelegate:
-                          //               const SliverGridDelegateWithMaxCrossAxisExtent(
-                          //                   maxCrossAxisExtent: 200,
-                          //                   childAspectRatio: 1.3 / 2,
-                          //                   crossAxisSpacing: 13,
-                          //                   mainAxisSpacing: 16),
-                          //               itemCount: pro.length >= 5
-                          //                   ? 4
-                          //                   : pro.length,
-                          //               itemBuilder:
-                          //                   (BuildContext ctx, index) {
-                          //                 var prod = pro[index];
-                          //
-                          //                 // bool wishlist = prod.wishlist.toLowerCase() == 'true';
-                          //
-                          //                 return InkWell(
-                          //
-                          //                   onTap: () {
-                          //
-                          //                     Navigator.push(
-                          //                         context,
-                          //                         MaterialPageRoute(
-                          //                             builder: (context) =>
-                          //                                 ViewSingleProductPage(
-                          //                                   productId: rData
-                          //                                       .productId,
-                          //                                 )));
-                          //                   },
-                          //                   child: Container(
-                          //                     child: Column(
-                          //                       children: [
-                          //                         Container(
-                          //                           height: height * .2,
-                          //                           width:
-                          //                           double.infinity,
-                          //                           decoration: BoxDecoration(
-                          //                               borderRadius: BorderRadius.only(
-                          //                                   topLeft: Radius
-                          //                                       .circular(
-                          //                                       10),
-                          //                                   topRight: Radius
-                          //                                       .circular(
-                          //                                       10)),
-                          //                               image: DecorationImage(
-                          //                                   fit: BoxFit
-                          //                                       .cover,
-                          //                                   image: NetworkImage(
-                          //                                       rData.imgUrl))),
-                          //                         ),
-                          //                         ListTile(
-                          //                           dense: true,
-                          //                           title: Text(
-                          //                             rData.title
-                          //                                 .toString()
-                          //                                 .toUpperCase(),
-                          //                             style: GoogleFonts
-                          //                                 .inter(
-                          //                                 fontWeight:
-                          //                                 FontWeight
-                          //                                     .w600,
-                          //                                 fontSize:
-                          //                                 13),
-                          //                             maxLines: 2,
-                          //                           ),
-                          //                           subtitle: Text(
-                          //                             rData.tag
-                          //                                 .toString()
-                          //                                 .toUpperCase(),
-                          //                             style: GoogleFonts
-                          //                                 .inter(
-                          //                                 fontWeight:
-                          //                                 FontWeight
-                          //                                     .w500,
-                          //                                 fontSize:
-                          //                                 11),
-                          //                             maxLines: 1,
-                          //                           ),
-                          //                           // trailing:wishlist?Icon(Icons.favorite , color: Color(0xffEA5524),) :Icon(Icons.favorite_border),
-                          //                         ),
-                          //                         Expanded(
-                          //                           child: Row(
-                          //                             children: [
-                          //                               SizedBox(
-                          //                                 width:
-                          //                                 width * .05,
-                          //                               ),
-                          //                               Text(
-                          //                                 "${rData.purchasePriceCurrency} ${rData.salePrice}",
-                          //                                 style: GoogleFonts.inter(
-                          //                                     fontWeight:
-                          //                                     FontWeight
-                          //                                         .w500,
-                          //                                     color: Color(
-                          //                                         0xffEA5524),
-                          //                                     fontSize:
-                          //                                     13),
-                          //                               ),
-                          //                               Text(
-                          //                                 "    ${rData.discount}% OFF",
-                          //                                 style: GoogleFonts.inter(
-                          //                                     fontWeight:
-                          //                                     FontWeight
-                          //                                         .w500,
-                          //                                     color: Color(
-                          //                                         0xff0F9D58),
-                          //                                     fontSize:
-                          //                                     9),
-                          //                               )
-                          //                             ],
-                          //                           ),
-                          //                         ),
-                          //                         Expanded(
-                          //                           child: Row(
-                          //                             mainAxisAlignment:
-                          //                             MainAxisAlignment
-                          //                                 .spaceBetween,
-                          //                             crossAxisAlignment:
-                          //                             CrossAxisAlignment
-                          //                                 .center,
-                          //                             children: [
-                          //                               Row(
-                          //                                 children: [
-                          //                                   SizedBox(
-                          //                                     width:
-                          //                                     width *
-                          //                                         .05,
-                          //                                   ),
-                          //                                   Image.asset(
-                          //                                       "images/icon/rating.png"),
-                          //                                   SizedBox(
-                          //                                     width:
-                          //                                     width *
-                          //                                         .01,
-                          //                                   ),
-                          //                                   Text(
-                          //                                     rData.ratingTotal,
-                          //                                     style: GoogleFonts.inter(
-                          //                                         fontSize:
-                          //                                         8),
-                          //                                   ),
-                          //                                   SizedBox(
-                          //                                     width:
-                          //                                     width *
-                          //                                         .01,
-                          //                                   ),
-                          //                                   Text(
-                          //                                     "(261) - 3.9k Sold",
-                          //                                     style: GoogleFonts.inter(
-                          //                                         fontSize:
-                          //                                         8),
-                          //                                   ),
-                          //                                 ],
-                          //                               ),
-                          //                               Icon(
-                          //                                 Icons.more_vert,
-                          //                                 size: 12,
-                          //                               ),
-                          //                               SizedBox(
-                          //                                 width:
-                          //                                 width * .03,
-                          //                               )
-                          //                             ],
-                          //                           ),
-                          //                         )
-                          //                       ],
-                          //                     ),
-                          //                     decoration: BoxDecoration(
-                          //                         color: Colors.white,
-                          //                         borderRadius:
-                          //                         BorderRadius
-                          //                             .circular(10)),
-                          //                   ),
-                          //                 );
-                          //               }),
-                          //         );
-                          //       } else if (snapshot.hasError) {
-                          //         return Icon(Icons.error_outline);
-                          //       } else {
-                          //         return CircularProgressIndicator();
-                          //       }
-                          //     })
+                                            // bool wishlist = prod.wishlist.toLowerCase() == 'true';
+
+                                            return InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ViewSingleProductPage(
+                                                              productId: rData
+                                                                  .productId,
+                                                            )));
+                                              },
+                                              child: Container(
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      height: height * .2,
+                                                      width: double.infinity,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10)),
+                                                          image: DecorationImage(
+                                                              fit: BoxFit.cover,
+                                                              image: NetworkImage(
+                                                                  rData
+                                                                      .imgUrl))),
+                                                    ),
+                                                    ListTile(
+                                                      dense: true,
+                                                      title: Text(
+                                                        rData.title
+                                                            .toString()
+                                                            .toUpperCase(),
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize: 13),
+                                                        maxLines: 2,
+                                                      ),
+                                                      subtitle: Text(
+                                                        rData.tag
+                                                            .toString()
+                                                            .toUpperCase(),
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 11),
+                                                        maxLines: 1,
+                                                      ),
+                                                      // trailing:wishlist?Icon(Icons.favorite , color: Color(0xffEA5524),) :Icon(Icons.favorite_border),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        children: [
+                                                          SizedBox(
+                                                            width: width * .05,
+                                                          ),
+                                                          Text(
+                                                            "${rData.purchasePriceCurrency} ${rData.salePrice}",
+                                                            style: GoogleFonts.inter(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Color(
+                                                                    0xffEA5524),
+                                                                fontSize: 13),
+                                                          ),
+                                                          Text(
+                                                            "    ${rData.discount}% OFF",
+                                                            style: GoogleFonts.inter(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Color(
+                                                                    0xff0F9D58),
+                                                                fontSize: 9),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              SizedBox(
+                                                                width:
+                                                                    width * .05,
+                                                              ),
+                                                              Image.asset(
+                                                                  "images/icon/rating.png"),
+                                                              SizedBox(
+                                                                width:
+                                                                    width * .01,
+                                                              ),
+                                                              Text(
+                                                                rData
+                                                                    .ratingTotal,
+                                                                style: GoogleFonts
+                                                                    .inter(
+                                                                        fontSize:
+                                                                            8),
+                                                              ),
+                                                              SizedBox(
+                                                                width:
+                                                                    width * .01,
+                                                              ),
+                                                              Text(
+                                                                "(261) - 3.9k Sold",
+                                                                style: GoogleFonts
+                                                                    .inter(
+                                                                        fontSize:
+                                                                            8),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Icon(
+                                                            Icons.more_vert,
+                                                            size: 12,
+                                                          ),
+                                                          SizedBox(
+                                                            width: width * .03,
+                                                          )
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                              ),
+                                            );
+                                          }),
+                                    ),
+                                  ],
+                                )
+                              : Container(),
+                          SizedBox(
+                            height: height * .1,
+                          )
                         ],
                       ),
                     )

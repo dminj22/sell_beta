@@ -9,6 +9,7 @@ import 'package:sell_beta_customer/Api/model/forget_otp_verify_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_password_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_update_password_model.dart';
 import 'package:sell_beta_customer/Api/model/get_all_notification_model.dart';
+import 'package:sell_beta_customer/Api/model/get_all_product_by_sub_cat_id.dart';
 import 'package:sell_beta_customer/Api/model/get_cart_list_model.dart';
 import 'package:sell_beta_customer/Api/model/get_category_model.dart';
 import 'package:sell_beta_customer/Api/model/get_product_by_sub_id_model.dart';
@@ -371,22 +372,22 @@ Future<VendorDetailModel?> getVendorDetails(userId)async{
 
 }
 
-Future getRelatedProduct(id)async{
+Future<GetAllProductBySubCatId?> getRelatedProduct(id)async{
+
   var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/getAllProductBySubCategory'));
   request.fields.addAll({
-    'sub_category_id ': '$id'
+    'sub_category_id': '$id'
   });
-
 
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
+    final str = await response.stream.bytesToString();
+  return GetAllProductBySubCatId.fromJson(json.decode(str));
   }
   else {
-    print(response.reasonPhrase);
+    return null;
   }
-
 }
 
 
