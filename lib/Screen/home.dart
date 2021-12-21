@@ -22,7 +22,10 @@ class _HomeState extends State<Home> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    VendorHomePage(),
+    Text(
+      'Index 2: School',
+      style: optionStyle,
+    ),
     Text(
       'Index 2: School',
       style: optionStyle,

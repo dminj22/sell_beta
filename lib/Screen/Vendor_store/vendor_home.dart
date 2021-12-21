@@ -7,7 +7,8 @@ import 'package:sell_beta_customer/Config/theme.dart';
 import 'package:sell_beta_customer/Screen/Product/view_one_product.dart';
 
 class VendorHomePage extends StatefulWidget {
-  const VendorHomePage({Key? key}) : super(key: key);
+  final vendorId;
+  const VendorHomePage({Key? key, this.vendorId}) : super(key: key);
 
   @override
   _VendorHomePageState createState() => _VendorHomePageState();
@@ -39,14 +40,14 @@ class _VendorHomePageState extends State<VendorHomePage> {
           backgroundColor: Color(0xffE5E5E5),
           body: FutureBuilder(
               future: Future.wait([
-                getVendorDetails(4),
-                getShopProduct(4),
+                getVendorDetails(widget.vendorId),
+                getShopProduct(widget.vendorId),
               ]),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
                   var pro = snapshot.data[1].data;
                   var vendor = snapshot.data[0].data;
-                  return snapshot.data[0].status
+                  return snapshot.data[0].status && snapshot.data[1].status
                       ? Container(
                           height: height,
                           width: width,
@@ -75,7 +76,9 @@ class _VendorHomePageState extends State<VendorHomePage> {
                                       backgroundColor: Colors.transparent,
                                       elevation: 0,
                                       leading: IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
                                           icon: Icon(Icons.arrow_back_ios)),
                                       title: Stack(
                                         alignment: Alignment.center,

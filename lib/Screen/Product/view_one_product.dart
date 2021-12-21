@@ -9,9 +9,11 @@ import 'package:sell_beta_customer/Api/model/add_to_cart_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Component/bottom_sheet/delivery.dart';
 import 'package:sell_beta_customer/Component/bottom_sheet/service.dart';
+import 'package:sell_beta_customer/Component/bottom_sheet/variation_bottom.dart';
 import 'package:sell_beta_customer/Config/theme.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:sell_beta_customer/Screen/Vendor_store/vendor_home.dart';
 
 final List<String> imgList = [
   'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
@@ -79,6 +81,17 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
         });
   }
 
+  _showVariation(proColor ,proSize ){
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        isScrollControlled: true,
+        context: context,
+        builder: (_) {
+          return VariationBottom(proColor: proColor, proSize: proSize,);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -92,7 +105,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
           future: Future.wait([
             getSingleProduct(widget.productId),
             getSingleProductImage(widget.productId),
-            getShopProduct(4),
+            getShopProduct(widget.vendorId),
             getCartList(user.userId),
             getVendorDetails(widget.vendorId),
             productReview(widget.productId),
@@ -404,10 +417,16 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                   data: data[0].description,
                                 ),
                               ),
+                              data[0]
+                                  .productColors.isNotEmpty?
                               Container(
                                 child: Column(
                                   children: [
                                     ListTile(
+                                      onTap: (){
+                                        _showVariation(data[0]
+                                            .productColors ,data[0].size);
+                                      },
                                       title: Text("Variations"),
                                       trailing: Text("View All >"),
                                     ),
@@ -458,7 +477,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                     )
                                   ],
                                 ),
-                              ),
+                              ):Container(),
                               data[0].size != ""
                                   ? Container(
                                       child: Column(
@@ -643,7 +662,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
 
                           //shop Products
 
-                          pro.isNotEmpty
+                          snapshot.data[2].status
                               ? Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10),
@@ -792,7 +811,11 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                               BorderRadius
                                                                   .circular(
                                                                       10)),
-                                                      onPressed: () {},
+                                                      onPressed: () {
+                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=> VendorHomePage(
+                                                          vendorId: widget.vendorId,
+                                                        )));
+                                                      },
                                                       child: Text("Visit"),
                                                     ),
                                                   ],
@@ -1044,10 +1067,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                           itemBuilder:
                                               (BuildContext ctx, index) {
                                             var rData = relPro[index];
-                                            print(pro.length);
-
                                             // bool wishlist = prod.wishlist.toLowerCase() == 'true';
-
                                             return InkWell(
                                               onTap: () {
                                                 Navigator.push(
