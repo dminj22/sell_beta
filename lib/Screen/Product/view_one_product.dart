@@ -9,6 +9,7 @@ import 'package:sell_beta_customer/Api/model/add_to_cart_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Component/bottom_sheet/delivery.dart';
 import 'package:sell_beta_customer/Component/bottom_sheet/service.dart';
+import 'package:sell_beta_customer/Component/bottom_sheet/specification.dart';
 import 'package:sell_beta_customer/Component/bottom_sheet/variation_bottom.dart';
 import 'package:sell_beta_customer/Config/theme.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
@@ -46,13 +47,31 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
 
   var selectedColor;
 
-  _addToCart(userId, prodId, price, vendorId) async {
+  String? sizeValue;
+
+  _addToCart(userId, prodId, price, vendorId, quantity, size, color) async {
     try {
-      AddToCartModel? model = await addToCart(userId, prodId, price, vendorId);
-      if (model!.status) {
-        showSnackBar(context, model.message);
+      if (selectedColor != null && selectedSize != null) {
+        if (userId != null&& prodId != null&& price != null&& vendorId != null&& quantity != null&& size!= null && color != null) {
+          AddToCartModel? model = await addToCart(
+              userId,
+              vendorId,
+              prodId,
+              quantity,
+              price,
+              size,
+              color);
+          if (model!.status) {
+
+            showSnackBar(context, model.message);
+          } else {
+            showSnackBar(context , model.message);
+          }
+        } else {
+          showSnackBar(context, "Something Went Wrong");
+        }
       } else {
-        showSnackBar(context, model.message);
+        showSnackBar(context, "Select Size and Color");
       }
     } catch (e) {
       print(e);
@@ -80,15 +99,25 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
           return ServiceModel();
         });
   }
-
-  _showVariation(proColor ,proSize ){
+  _showSpecification(proData) {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
         isScrollControlled: true,
         context: context,
         builder: (_) {
-          return VariationBottom(proColor: proColor, proSize: proSize,);
+          return SpecificationBottomModel(proData: proData,);
+        });
+  }
+
+  _showVariation(proColor ,proSize  , proData){
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        isScrollControlled: true,
+        context: context,
+        builder: (_) {
+          return VariationBottom(proColor: proColor, proSize: proSize, proData: proData,);
         });
   }
 
@@ -103,7 +132,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
     return Scaffold(
       body: FutureBuilder(
           future: Future.wait([
-            getSingleProduct(widget.productId),
+            getSingleProduct(widget.productId , user.userId),
             getSingleProductImage(widget.productId),
             getShopProduct(widget.vendorId),
             getCartList(user.userId),
@@ -165,8 +194,21 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                             Expanded(
                               child: CustomButtons(
                                 onPressed: () {
-                                  // _addToCart(user.userId, widget.productId,
-                                  //     widget.price, widget.vendorId);
+                                  var userId = user.userId;
+                                  var prodId = data[0].productId;
+                                  var price = "${data[0].salePrice}";
+                                  var vendorId = data[0].vendorId;
+                                  var quantity = "1";
+                                  var size = "$sizeValue";
+                                  var color = "$selectedColor";
+                                  _addToCart(
+                                      userId,
+                                      prodId,
+                                      price,
+                                      vendorId,
+                                      quantity,
+                                      size,
+                                      color);
                                 },
                                 text: "Add to Cart",
                                 color: [Color(0xffF15741), Color(0xffF29F46)],
@@ -397,8 +439,8 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                         children: [
                                           IconButton(
                                               onPressed: () {},
-                                              icon: Icon(Icons
-                                                  .favorite_border_outlined)),
+                                              icon:data[0].wishlist == "true"? Icon(Icons
+                                                  .favorite_border_outlined):Icon(Icons.favorite , color: Color(primaryColor),)),
                                           IconButton(
                                               onPressed: () {},
                                               icon: Icon(Icons.share)),
@@ -425,7 +467,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                     ListTile(
                                       onTap: (){
                                         _showVariation(data[0]
-                                            .productColors ,data[0].size);
+                                            .productColors ,data[0].size , data[0]);
                                       },
                                       title: Text("Variations"),
                                       trailing: Text("View All >"),
@@ -518,6 +560,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                               setState(() {
                                                                 selectedSize =
                                                                     e.key;
+                                                                sizeValue = e.value;
                                                               });
                                                             },
                                                             child: Text(
@@ -560,6 +603,12 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                 title: Text("Services"),
                                 subtitle: Text("7 days easy refund to seller"),
                                 trailing: Text("View All >"),
+                              ),
+                              ListTile(
+                                onTap: () {
+                                  _showSpecification(data[0]);
+                                },
+                                title: Text("Specification"),
                               ),
                             ],
                           ),

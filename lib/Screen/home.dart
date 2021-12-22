@@ -30,10 +30,7 @@ class _HomeState extends State<Home> {
       'Index 2: School',
       style: optionStyle,
     ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    CartPage(),
    AccountPage()
   ];
 

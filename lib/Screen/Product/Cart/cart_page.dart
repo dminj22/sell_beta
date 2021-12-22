@@ -72,7 +72,7 @@ class _CartPageState extends State<CartPage> {
                   var item = snapshot.data.data[index];
 
                   return FutureBuilder(
-                      future: getSingleProduct(item.productId),
+                      // future: getSingleProduct(item.productId),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
                           var data;
@@ -98,7 +98,7 @@ class _CartPageState extends State<CartPage> {
                                             decoration: BoxDecoration(
                                                 image: DecorationImage(
                                                     image: NetworkImage(
-                                                        data.imageThumbUrl)),
+                                                        data[index].imageThumbUrl)),
                                                 border: Border.all(
                                                     color: Colors.grey),
                                                 borderRadius: BorderRadius.all(

@@ -258,11 +258,11 @@ Future<GetProductBySubIdModel?> getAllProductBySubId(id) async {
   }
 }
 
-Future<SingleProductViewModel?> getSingleProduct(id) async {
+Future<SingleProductViewModel?> getSingleProduct(id , userId) async {
   try {
     var request =
         http.MultipartRequest('POST', Uri.parse(_url.singleProductDetails));
-    request.fields.addAll({'product_id': id});
+    request.fields.addAll({'product_id': id , "user_id":userId});
 
     http.StreamedResponse response = await request.send();
     _log.d("$request || ${request.fields}");
@@ -329,24 +329,27 @@ Future<GetCartListModel?> getCartList(userId) async {
   }
 }
 
-Future<AddToCartModel?> addToCart(userId, prodId, price, vendorId) async {
+Future<AddToCartModel?> addToCart(userId , vendorId , prodId , quantity , price , size , color) async {
   var request = http.MultipartRequest('POST', Uri.parse(_url.addToCart));
   request.fields.addAll({
     'user_id': '$userId',
     'product_id': '$prodId',
-    'quantity': '1',
+    'quantity': '$quantity',
     'price': '$price',
-    'vendor_id': '$vendorId'
+    'vendor_id': '$vendorId',
+    'size': '$size',
+    'color': '$color'
   });
 
   http.StreamedResponse response = await request.send();
   _log.d("$request || ${request.fields}");
   if (response.statusCode == 200) {
-    final str = await response.stream.bytesToString();
-    _log.e(str);
-    return addToCartModelFromJson(str);
-  } else {
-    return null;
+     final str  = await response.stream.bytesToString();
+     _log.e(str);
+     return addToCartModelFromJson(str);
+  }
+  else {
+    print(response.reasonPhrase);
   }
 }
 
