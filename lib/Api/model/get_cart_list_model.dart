@@ -15,7 +15,7 @@ class GetCartListModel {
     this.data,
   });
 
-  dynamic status;
+  bool? status;
   String? message;
   List<Datum>? data;
 
@@ -34,44 +34,96 @@ class GetCartListModel {
 
 class Datum {
   Datum({
-    this.cartId,
     this.userId,
-    this.vendorId,
+    this.username,
+    this.userPrfileImg,
+    this.vendorShopName,
+    this.vendorShopLogo,
     this.productId,
     this.quantity,
-    this.price,
-    this.dateTime,
-    this.status,
+    this.size,
+    this.color,
+    this.addedOn,
+    this.productList,
   });
 
-  String? cartId;
   String? userId;
-  String? vendorId;
+  String? username;
+  String? userPrfileImg;
+  String? vendorShopName;
+  String? vendorShopLogo;
   String? productId;
-  String ?quantity;
-  String? price;
-  DateTime? dateTime;
-  String ?status;
+  String? quantity;
+  String? size;
+  String? color;
+  DateTime? addedOn;
+  ProductList? productList;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    cartId: json["cart_id"] == null ? null : json["cart_id"],
     userId: json["user_id"] == null ? null : json["user_id"],
-    vendorId: json["vendor_id"] == null ? null : json["vendor_id"],
+    username: json["username"] == null ? null : json["username"],
+    userPrfileImg: json["user_prfile_img"] == null ? null : json["user_prfile_img"],
+    vendorShopName: json["vendor_shop_name"] == null ? null : json["vendor_shop_name"],
+    vendorShopLogo: json["vendor_shop_logo"] == null ? null : json["vendor_shop_logo"],
     productId: json["product_id"] == null ? null : json["product_id"],
     quantity: json["quantity"] == null ? null : json["quantity"],
-    price: json["price"] == null ? null : json["price"],
-    dateTime: json["date_time"] == null ? null : DateTime.parse(json["date_time"]),
-    status: json["status"] == null ? null : json["status"],
+    size: json["size"] == null ? null : json["size"],
+    color: json["color"] == null ? null : json["color"],
+    addedOn: json["added_on"] == null ? null : DateTime.parse(json["added_on"]),
+    productList: json["product_list"] == null ? null : ProductList.fromJson(json["product_list"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "cart_id": cartId == null ? null : cartId,
     "user_id": userId == null ? null : userId,
-    "vendor_id": vendorId == null ? null : vendorId,
+    "username": username == null ? null : username,
+    "user_prfile_img": userPrfileImg == null ? null : userPrfileImg,
+    "vendor_shop_name": vendorShopName == null ? null : vendorShopName,
+    "vendor_shop_logo": vendorShopLogo == null ? null : vendorShopLogo,
     "product_id": productId == null ? null : productId,
     "quantity": quantity == null ? null : quantity,
-    "price": price == null ? null : price,
-    "date_time": dateTime == null ? null : dateTime!.toIso8601String(),
-    "status": status == null ? null : status,
+    "size": size == null ? null : size,
+    "color": color == null ? null : color,
+    "added_on": addedOn == null ? null : addedOn!.toIso8601String(),
+    "product_list": productList == null ? null : productList!.toJson(),
+  };
+}
+
+class ProductList {
+  ProductList({
+    this.productId,
+    this.sku,
+    this.title,
+    this.description,
+    this.salePrice,
+    this.salePriceCurrency,
+    this.thumbImage,
+  });
+
+  String? productId;
+  String? sku;
+  String? title;
+  String? description;
+  String? salePrice;
+  String? salePriceCurrency;
+  String? thumbImage;
+
+  factory ProductList.fromJson(Map<String, dynamic> json) => ProductList(
+    productId: json["product_id"] == null ? null : json["product_id"],
+    sku: json["sku"] == null ? null : json["sku"],
+    title: json["title"] == null ? null : json["title"],
+    description: json["description"] == null ? null : json["description"],
+    salePrice: json["sale_price"] == null ? null : json["sale_price"],
+    salePriceCurrency: json["sale_price_currency"] == null ? null : json["sale_price_currency"],
+    thumbImage: json["thumb_image"] == null ? null : json["thumb_image"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "product_id": productId == null ? null : productId,
+    "sku": sku == null ? null : sku,
+    "title": title == null ? null : title,
+    "description": description == null ? null : description,
+    "sale_price": salePrice == null ? null : salePrice,
+    "sale_price_currency": salePriceCurrency == null ? null : salePriceCurrency,
+    "thumb_image": thumbImage == null ? null : thumbImage,
   };
 }

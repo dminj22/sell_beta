@@ -71,122 +71,118 @@ class _CartPageState extends State<CartPage> {
                 itemBuilder: (BuildContext context, int index) {
                   var item = snapshot.data.data[index];
 
-                  return FutureBuilder(
-                      // future: getSingleProduct(item.productId),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          var data;
-
-                          snapshot.data.status
-                              ? data = snapshot.data.data
-                              : print("Failed");
-
-                          return snapshot.data.status
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 22, vertical: 6),
-                                  child: Card(
-                                    elevation: 3,
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 13, vertical: 11),
-                                          child: Container(
-                                            height: 98,
-                                            width: 98,
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        data[index].imageThumbUrl)),
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10))),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            children: [
-                                              ListTile(
-                                                minVerticalPadding: 0,
-                                                title: Text(
-                                                  "${data.title}".toUpperCase(),
-                                                  style: GoogleFonts.inter(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                                subtitle: Text(
-                                                  "${data.seoDescription}",
-                                                  style: GoogleFonts.inter(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Color(0xffC4C4C4)),
-                                                  maxLines: 1,
-                                                ),
-                                              ),
-                                              ListTile(
-                                                dense: true,
-                                                title: Text(
-                                                  "Color - Blue,Brand : Puma",
-                                                  style: GoogleFonts.inter(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 10),
-                                                ),
-                                                subtitle: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "${data.purchasePriceCurrency} ${item.price}",
-                                                      style: GoogleFonts.inter(
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          color: Color(
-                                                              0xffF15741)),
-                                                    ),
-                                                    InkWell(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            num = num - 1;
-                                                          });
-                                                        },
-                                                        child: ImageIcon(AssetImage(
-                                                            "images/icon/minus-square.png"))),
-                                                    Text(num.toString()),
-                                                    InkWell(
-                                                        onTap: () {
-                                                          setState(() {
-                                                            num = num + 1;
-                                                          });
-                                                        },
-                                                        child: ImageIcon(
-                                                          AssetImage(
-                                                              "images/icon/add-square.png"),
-                                                          color:
-                                                              Color(0xffF15741),
-                                                        ))
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 22, vertical: 6),
+                    child: Card(
+                      elevation: 3,
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 13, vertical: 11),
+                            child:
+                            item.productList.thumbImage != "" && item.productList.thumbImage != null?
+                            Container(
+                              height: 98,
+                              width: 98,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image:
+                                      NetworkImage(
+                                          item.productList.thumbImage)),
+                                  border: Border.all(
+                                      color: Colors.grey),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(10))),
+                            ):Container(
+                              height: 98,
+                              width: 98,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image:
+                                      AssetImage("images/sample/no_image.jpg")),
+                                  border: Border.all(
+                                      color: Colors.grey),
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(10))),
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  minVerticalPadding: 0,
+                                  title: Text(
+                                    "${item.productList.title}".toUpperCase(),
+                                    style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        fontWeight:
+                                        FontWeight.w600),
+                                  ),
+                                  subtitle: Text(
+                                    "Size - ${item.size}",
+                                    style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        fontWeight:
+                                        FontWeight.w400,
+                                        color: Color(0xffC4C4C4)),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                ListTile(
+                                  dense: true,
+                                  title: Text(
+                                    "Color - ${item.color}",
+                                    style: GoogleFonts.inter(
+                                        fontWeight:
+                                        FontWeight.w600,
+                                        fontSize: 10),
+                                  ),
+                                  subtitle: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${item.productList.salePriceCurrency} ${item.productList.salePrice}",
+                                        style: GoogleFonts.inter(
+                                            fontWeight:
+                                            FontWeight.w700,
+                                            color: Color(
+                                                0xffF15741)),
+                                      ),
+                                      InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              num = num - 1;
+                                            });
+                                          },
+                                          child: ImageIcon(AssetImage(
+                                              "images/icon/minus-square.png"))),
+                                      Text(num.toString()),
+                                      InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              num = num + 1;
+                                            });
+                                          },
+                                          child: ImageIcon(
+                                            AssetImage(
+                                                "images/icon/add-square.png"),
+                                            color:
+                                            Color(0xffF15741),
+                                          ))
+                                    ],
                                   ),
                                 )
-                              : Text("NO Product Found");
-                        } else if (snapshot.hasError) {
-                          return Icon(Icons.error_outline);
-                        } else {
-                          return Card();
-                        }
-                      });
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
                 },
               );
             } else if (snapshot.hasError) {
