@@ -13,8 +13,10 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  var num = 1;
-  var noOfItem = [];
+
+  var itemNo = [];
+  var selectItem = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,48 +66,82 @@ class _CartPageState extends State<CartPage> {
           future: getCartList(user.userId),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
+              if (itemNo.isEmpty) {
+                itemNo = snapshot.data.data
+                    .map((e) => int.parse(e.quantity))
+                    .toList();
+                selectItem = snapshot.data.data.map((i)=> false).toList();
+                print(itemNo);
+                print(selectItem);
+              }
               return ListView.builder(
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 itemCount: snapshot.data.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   var item = snapshot.data.data[index];
-
                   return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 22, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 22, vertical: 6),
                     child: Card(
                       elevation: 3,
                       child: Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 13, vertical: 11),
-                            child:
-                            item.productList.thumbImage != "" && item.productList.thumbImage != null?
-                            Container(
-                              height: 98,
-                              width: 98,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image:
-                                      NetworkImage(
-                                          item.productList.thumbImage)),
-                                  border: Border.all(
-                                      color: Colors.grey),
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(10))),
-                            ):Container(
-                              height: 98,
-                              width: 98,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image:
-                                      AssetImage("images/sample/no_image.jpg")),
-                                  border: Border.all(
-                                      color: Colors.grey),
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(10))),
+                          InkWell(
+                            onTap: (){
+                              setState(() {
+                                selectItem[index] = !selectItem[index];
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 13, vertical: 11),
+                              child: item.productList.thumbImage != "" &&
+                                      item.productList.thumbImage != null
+                                  ? Container(
+                                      height: 98,
+                                      width: 98,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  item.productList.thumbImage)),
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: SizedBox(
+                                      height: 24.0,
+                                      width: 24.0,
+                                      child: Checkbox(
+                                        activeColor: Color(0xffF15741),
+                                        onChanged: (bool? value) {
+
+                                        }, value: selectItem[index],),
+                                    )),
+                                    )
+                                  : Container(
+                                child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: SizedBox(
+                                      height: 24.0,
+                                      width: 24.0,
+                                      child: Checkbox(
+                                        activeColor: Color(0xffF15741),
+                                        onChanged: (bool? value) {
+
+                                        }, value: selectItem[index],),
+                                    )),
+                                      height: 98,
+                                      width: 98,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  "images/sample/no_image.jpg")),
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                    ),
                             ),
                           ),
                           Expanded(
@@ -117,15 +153,13 @@ class _CartPageState extends State<CartPage> {
                                     "${item.productList.title}".toUpperCase(),
                                     style: GoogleFonts.inter(
                                         fontSize: 14,
-                                        fontWeight:
-                                        FontWeight.w600),
+                                        fontWeight: FontWeight.w600),
                                   ),
                                   subtitle: Text(
                                     "Size - ${item.size}",
                                     style: GoogleFonts.inter(
                                         fontSize: 12,
-                                        fontWeight:
-                                        FontWeight.w400,
+                                        fontWeight: FontWeight.w400,
                                         color: Color(0xffC4C4C4)),
                                     maxLines: 1,
                                   ),
@@ -135,43 +169,42 @@ class _CartPageState extends State<CartPage> {
                                   title: Text(
                                     "Color - ${item.color}",
                                     style: GoogleFonts.inter(
-                                        fontWeight:
-                                        FontWeight.w600,
+                                        fontWeight: FontWeight.w600,
                                         fontSize: 10),
                                   ),
                                   subtitle: Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "${item.productList.salePriceCurrency} ${item.productList.salePrice}",
+                                        "${item.productList.salePriceCurrency??""} ${item.productList.salePrice??""}",
                                         style: GoogleFonts.inter(
-                                            fontWeight:
-                                            FontWeight.w700,
-                                            color: Color(
-                                                0xffF15741)),
+                                            fontWeight: FontWeight.w700,
+                                            color: Color(0xffF15741)),
                                       ),
                                       InkWell(
                                           onTap: () {
                                             setState(() {
-                                              num = num - 1;
+                                              if (itemNo[index] > 1) {
+                                                itemNo[index] =
+                                                    itemNo[index] - 1;
+                                              }
                                             });
                                           },
                                           child: ImageIcon(AssetImage(
                                               "images/icon/minus-square.png"))),
-                                      Text(num.toString()),
+                                      Text(itemNo[index].toString()),
                                       InkWell(
                                           onTap: () {
                                             setState(() {
-                                              num = num + 1;
+                                              itemNo[index] = itemNo[index] + 1;
+                                              print(itemNo);
                                             });
                                           },
                                           child: ImageIcon(
                                             AssetImage(
                                                 "images/icon/add-square.png"),
-                                            color:
-                                            Color(0xffF15741),
+                                            color: Color(0xffF15741),
                                           ))
                                     ],
                                   ),

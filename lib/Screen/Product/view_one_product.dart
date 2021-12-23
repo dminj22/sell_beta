@@ -77,7 +77,6 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
       print(e);
     }
   }
-
   _showDelivery() {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -88,7 +87,6 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
           return DeliveryModel();
         });
   }
-
   _showService() {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -109,7 +107,6 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
           return SpecificationBottomModel(proData: proData,);
         });
   }
-
   _showVariation(proColor ,proSize  , proData){
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -609,6 +606,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                   _showSpecification(data[0]);
                                 },
                                 title: Text("Specification"),
+                                trailing: Text("View All >"),
                               ),
                             ],
                           ),

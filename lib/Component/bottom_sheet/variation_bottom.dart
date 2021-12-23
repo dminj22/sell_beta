@@ -70,7 +70,7 @@ class _VariationBottomState extends State<VariationBottom> {
         .width;
     var user = Provider.of<UserProvider>(context);
     return Container(
-      height: height * .8,
+      height: height * .7,
       width: width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
