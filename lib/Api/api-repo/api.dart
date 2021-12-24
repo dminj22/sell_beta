@@ -76,6 +76,7 @@ Future<UserDetailsModel?> userDetails(userId) async {
   }
 }
 
+//Forgot Password
 Future<ForgetPasswordModel?> forgetPassword(email) async {
   var request = http.MultipartRequest('POST', Uri.parse(_url.forgetPassword));
 
@@ -94,6 +95,7 @@ Future<ForgetPasswordModel?> forgetPassword(email) async {
   }
 }
 
+//otp Verify
 Future<OtpVerifyModel?> otpVerify(email, otp) async {
   var request = http.MultipartRequest('POST', Uri.parse(_url.verifyOTP));
   request.fields.addAll({'email': '$email', 'otp': '$otp'});
@@ -109,6 +111,7 @@ Future<OtpVerifyModel?> otpVerify(email, otp) async {
   }
 }
 
+// forgot otp verify
 Future<ForgetOtpVerifyModel?> forgotOtpVerify(email, otp) async {
   var request =
       http.MultipartRequest('POST', Uri.parse(_url.verifyForgotPasswordOtp));
@@ -125,6 +128,7 @@ Future<ForgetOtpVerifyModel?> forgotOtpVerify(email, otp) async {
   }
 }
 
+//forgot update password
 Future<ForgetUpdatePasswordModel?> forgetUpdatePassword(email, password) async {
   var request =
       http.MultipartRequest('POST', Uri.parse(_url.forgetUpdatePassword));
@@ -141,6 +145,8 @@ Future<ForgetUpdatePasswordModel?> forgetUpdatePassword(email, password) async {
   }
 }
 
+
+//update profile
 Future<UpdateProfileModel?> updateProfile(
     userId, name, phone, address, country, state, city, zip) async {
   var request =
@@ -167,6 +173,8 @@ Future<UpdateProfileModel?> updateProfile(
   }
 }
 
+
+//upload Profile Pic
 Future<UpdateProfileModel?> uploadProfilePic(
     userId, image, name, phone, address, country, state, city, zip) async {
   var request =
@@ -195,6 +203,8 @@ Future<UpdateProfileModel?> uploadProfilePic(
   }
 }
 
+
+// get categories
 Future<GetCategoryModel?> getCategories() async {
   var request = http.MultipartRequest('POST', Uri.parse(_url.getAllCategory));
 
@@ -209,6 +219,7 @@ Future<GetCategoryModel?> getCategories() async {
   }
 }
 
+// get sub Categories
 Future<GetSubCategoryModel?> getSubCategory(catId) async {
   var request =
       http.MultipartRequest('POST', Uri.parse(_url.getAllSubCategory));
@@ -225,6 +236,7 @@ Future<GetSubCategoryModel?> getSubCategory(catId) async {
   }
 }
 
+// get notification
 Future<GetAllNotificationModel?> getNotification() async {
   var request =
       http.MultipartRequest('POST', Uri.parse(_url.getAllNotifications));
@@ -240,6 +252,7 @@ Future<GetAllNotificationModel?> getNotification() async {
   }
 }
 
+// get all product by sub Id
 Future<GetProductBySubIdModel?> getAllProductBySubId(id) async {
   var request =
       http.MultipartRequest('POST', Uri.parse(_url.getAllProductBySubCategory));
@@ -258,6 +271,7 @@ Future<GetProductBySubIdModel?> getAllProductBySubId(id) async {
   }
 }
 
+//get single product
 Future<SingleProductViewModel?> getSingleProduct(id , userId) async {
   try {
     var request =
@@ -278,6 +292,7 @@ Future<SingleProductViewModel?> getSingleProduct(id , userId) async {
   }
 }
 
+// get single product Image
 Future<SingleViewProductImageModel?> getSingleProductImage(id) async {
   try {
     var request = http.MultipartRequest(
@@ -298,6 +313,7 @@ Future<SingleViewProductImageModel?> getSingleProductImage(id) async {
   }
 }
 
+// get shop product
 Future<ShopProductModel?> getShopProduct(id) async {
   var request =
       http.MultipartRequest('POST', Uri.parse(_url.vendorProductsShop));
@@ -314,6 +330,7 @@ Future<ShopProductModel?> getShopProduct(id) async {
   }
 }
 
+// get cart list
 Future<GetCartListModel?> getCartList(userId) async {
   var request = http.MultipartRequest('POST', Uri.parse(_url.getAddToCartList));
   request.fields.addAll({'user_id': '$userId'});
@@ -329,6 +346,7 @@ Future<GetCartListModel?> getCartList(userId) async {
   }
 }
 
+// add to cart
 Future<AddToCartModel?> addToCart(userId , vendorId , prodId , quantity , price , size , color) async {
   var request = http.MultipartRequest('POST', Uri.parse(_url.addToCart));
   request.fields.addAll({
@@ -353,6 +371,7 @@ Future<AddToCartModel?> addToCart(userId , vendorId , prodId , quantity , price 
   }
 }
 
+// get vendor details
 Future<VendorDetailModel?> getVendorDetails(userId)async{
 
   var request = http.MultipartRequest('POST', Uri.parse(_url.vendorShopDetails));
@@ -375,6 +394,7 @@ Future<VendorDetailModel?> getVendorDetails(userId)async{
 
 }
 
+// get related product
 Future<GetAllProductBySubCatId?> getRelatedProduct(id)async{
 
   var request = http.MultipartRequest('POST', Uri.parse(_url.getAllProductBySubCategory));
@@ -393,7 +413,7 @@ Future<GetAllProductBySubCatId?> getRelatedProduct(id)async{
   }
 }
 
-
+// product review
 Future<ProductReviewModel?> productReview(id)async{
   var request = http.MultipartRequest('POST', Uri.parse(_url.getProductReviewsList));
   request.fields.addAll({
@@ -411,7 +431,7 @@ Future<ProductReviewModel?> productReview(id)async{
 
 }
 
-
+// delete cart item
 Future deleteCartItem(userId , cartId)async{
   var request = http.MultipartRequest('POST', Uri.parse(_url.multipleDeleteCartList));
   request.fields.addAll({
