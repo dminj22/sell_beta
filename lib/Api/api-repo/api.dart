@@ -355,7 +355,7 @@ Future<AddToCartModel?> addToCart(userId , vendorId , prodId , quantity , price 
 
 Future<VendorDetailModel?> getVendorDetails(userId)async{
 
-  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/vendorShopDetails'));
+  var request = http.MultipartRequest('POST', Uri.parse(_url.vendorShopDetails));
   request.fields.addAll({
     'vendor_id': '$userId'
   });
@@ -377,7 +377,7 @@ Future<VendorDetailModel?> getVendorDetails(userId)async{
 
 Future<GetAllProductBySubCatId?> getRelatedProduct(id)async{
 
-  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/getAllProductBySubCategory'));
+  var request = http.MultipartRequest('POST', Uri.parse(_url.getAllProductBySubCategory));
   request.fields.addAll({
     'sub_category_id': '$id'
   });
@@ -395,7 +395,7 @@ Future<GetAllProductBySubCatId?> getRelatedProduct(id)async{
 
 
 Future<ProductReviewModel?> productReview(id)async{
-  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/getProductReviewsList'));
+  var request = http.MultipartRequest('POST', Uri.parse(_url.getProductReviewsList));
   request.fields.addAll({
     'product_id': '$id'
   });
@@ -407,6 +407,25 @@ Future<ProductReviewModel?> productReview(id)async{
   }
   else {
     return null;
+  }
+
+}
+
+
+Future deleteCartItem(userId , cartId)async{
+  var request = http.MultipartRequest('POST', Uri.parse(_url.multipleDeleteCartList));
+  request.fields.addAll({
+    'user_id': '$userId',
+    'cart_id[0]': '$cartId'
+  });
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    print(await response.stream.bytesToString());
+  }
+  else {
+    print(response.reasonPhrase);
   }
 
 }

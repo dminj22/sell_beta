@@ -740,7 +740,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                         RatingBarIndicator(
                                                       rating: double.parse(
                                                           vendor[0]
-                                                              .ratingTotal),
+                                                              .ratingTotal??"0.0"),
                                                       itemBuilder:
                                                           (context, index) =>
                                                               Icon(

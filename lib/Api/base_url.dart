@@ -37,4 +37,6 @@ class Url{
   final getAllProductBySubCategory = "$baseUrl/getAllProductBySubCategory";
   final getNotificationsDetails = "$baseUrl/getNotificationsDetails";
   final addToCart = "$baseUrl/insert_add_to_cart";
+  final getProductReviewsList = "$baseUrl/getProductReviewsList";
+  final vendorShopDetails = "$baseUrl/vendorShopDetails";
 }

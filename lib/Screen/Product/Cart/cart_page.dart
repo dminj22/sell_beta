@@ -16,6 +16,7 @@ class _CartPageState extends State<CartPage> {
 
   var itemNo = [];
   var selectItem = [];
+  var deleteItem = [];
 
 
   @override
@@ -50,10 +51,15 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ],
               ),
-              ImageIcon(
-                AssetImage('images/icon/delete.png'),
-                color: Color(0xffEA5524),
-                size: 20,
+              InkWell(
+                onTap: (){
+                  deleteCartItem(user.userId, "cartId");
+                },
+                child: ImageIcon(
+                  AssetImage('images/icon/delete.png'),
+                  color: Color(0xffEA5524),
+                  size: 20,
+                ),
               ),
             ],
           ),
@@ -74,149 +80,179 @@ class _CartPageState extends State<CartPage> {
                 print(itemNo);
                 print(selectItem);
               }
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
-                itemCount: snapshot.data.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var item = snapshot.data.data[index];
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 22, vertical: 6),
-                    child: Card(
-                      elevation: 3,
-                      child: Row(
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              setState(() {
-                                selectItem[index] = !selectItem[index];
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 13, vertical: 11),
-                              child: item.productList.thumbImage != "" &&
-                                      item.productList.thumbImage != null
-                                  ? Container(
-                                      height: 98,
-                                      width: 98,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  item.productList.thumbImage)),
-                                          border: Border.all(color: Colors.grey),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                child: Align(
-                                    alignment: Alignment.topRight,
-                                    child: SizedBox(
-                                      height: 24.0,
-                                      width: 24.0,
-                                      child: Checkbox(
-                                        activeColor: Color(0xffF15741),
-                                        onChanged: (bool? value) {
+              return ListView(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    itemCount: snapshot.data.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var item = snapshot.data.data[index];
+                      return Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 22, vertical: 6),
+                        child: Card(
+                          elevation: 3,
+                          child: Row(
+                            children: [
+                              InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    selectItem[index] = !selectItem[index];
+                                    if(deleteItem.contains(snapshot.data.data[index].productList.productId)){
+                                      deleteItem.remove(snapshot.data.data[index].productList.productId);
+                                    }else{
+                                      deleteItem.add(snapshot.data.data[index].productList.productId);
+                                    }
 
-                                        }, value: selectItem[index],),
-                                    )),
-                                    )
-                                  : Container(
-                                child: Align(
-                                    alignment: Alignment.topRight,
-                                    child: SizedBox(
-                                      height: 24.0,
-                                      width: 24.0,
-                                      child: Checkbox(
-                                        activeColor: Color(0xffF15741),
-                                        onChanged: (bool? value) {
+                                    print(deleteItem);
+                                  });
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 13, vertical: 11),
+                                  child: item.productList.thumbImage != "" &&
+                                          item.productList.thumbImage != null
+                                      ? Container(
+                                          height: 98,
+                                          width: 98,
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      item.productList.thumbImage)),
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
+                                    child: Align(
+                                        alignment: Alignment.topRight,
+                                        child: SizedBox(
+                                          height: 24.0,
+                                          width: 24.0,
+                                          child: Checkbox(
+                                            activeColor: Color(0xffF15741),
+                                            onChanged: (bool? value) {
 
-                                        }, value: selectItem[index],),
-                                    )),
-                                      height: 98,
-                                      width: 98,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                                  "images/sample/no_image.jpg")),
-                                          border: Border.all(color: Colors.grey),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                    ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                ListTile(
-                                  minVerticalPadding: 0,
-                                  title: Text(
-                                    "${item.productList.title}".toUpperCase(),
-                                    style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  subtitle: Text(
-                                    "Size - ${item.size}",
-                                    style: GoogleFonts.inter(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                        color: Color(0xffC4C4C4)),
-                                    maxLines: 1,
-                                  ),
+                                            }, value: selectItem[index],),
+                                        )),
+                                        )
+                                      : Container(
+                                    child: Align(
+                                        alignment: Alignment.topRight,
+                                        child: SizedBox(
+                                          height: 24.0,
+                                          width: 24.0,
+                                          child: Checkbox(
+                                            activeColor: Color(0xffF15741),
+                                            onChanged: (bool? value) {
+
+                                            }, value: selectItem[index],),
+                                        )),
+                                          height: 98,
+                                          width: 98,
+                                          decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  image: AssetImage(
+                                                      "images/sample/no_image.jpg")),
+                                              border: Border.all(color: Colors.grey),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
+                                        ),
                                 ),
-                                ListTile(
-                                  dense: true,
-                                  title: Text(
-                                    "Color - ${item.color}",
-                                    style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 10),
-                                  ),
-                                  subtitle: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "${item.productList.salePriceCurrency??""} ${item.productList.salePrice??""}",
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      minVerticalPadding: 0,
+                                      title: Text(
+                                        "${item.productList.title}".toUpperCase(),
                                         style: GoogleFonts.inter(
-                                            fontWeight: FontWeight.w700,
-                                            color: Color(0xffF15741)),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600),
                                       ),
-                                      InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              if (itemNo[index] > 1) {
-                                                itemNo[index] =
-                                                    itemNo[index] - 1;
-                                              }
-                                            });
-                                          },
-                                          child: ImageIcon(AssetImage(
-                                              "images/icon/minus-square.png"))),
-                                      Text(itemNo[index].toString()),
-                                      InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              itemNo[index] = itemNo[index] + 1;
-                                              print(itemNo);
-                                            });
-                                          },
-                                          child: ImageIcon(
-                                            AssetImage(
-                                                "images/icon/add-square.png"),
-                                            color: Color(0xffF15741),
-                                          ))
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
+                                      subtitle: Text(
+                                        "Size - ${item.size}",
+                                        style: GoogleFonts.inter(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(0xffC4C4C4)),
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                    ListTile(
+                                      dense: true,
+                                      title: Text(
+                                        "Color - ${item.color}",
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 10),
+                                      ),
+                                      subtitle: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "${item.productList.salePriceCurrency??""} ${item.productList.salePrice??""}",
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w700,
+                                                color: Color(0xffF15741)),
+                                          ),
+                                          InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  if (itemNo[index] > 1) {
+                                                    itemNo[index] =
+                                                        itemNo[index] - 1;
+                                                  }
+                                                });
+                                              },
+                                              child: ImageIcon(AssetImage(
+                                                  "images/icon/minus-square.png"))),
+                                          Text(itemNo[index].toString()),
+                                          InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  itemNo[index] = itemNo[index] + 1;
+                                                  print(itemNo);
+                                                });
+                                              },
+                                              child: ImageIcon(
+                                                AssetImage(
+                                                    "images/icon/add-square.png"),
+                                                color: Color(0xffF15741),
+                                              ))
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 19),
+                    child: Card(
+                      child: ListTile(
+                        title: Text("Total:"),
+                        subtitle: Text("${snapshot.data.data[0].productList.salePriceCurrency} 1200"),
+                        trailing: SizedBox(
+                          width: 100,
+                          child: CustomButtons(
+                            color: [
+                              Color(0xffF15741),
+                              Color(0xffF29F46)
+                            ],
+                            text: "Check Out",
+                          ),
+                        ),
                       ),
                     ),
-                  );
-                },
+                  )
+                ],
               );
             } else if (snapshot.hasError) {
               return Icon(Icons.error_outline);
