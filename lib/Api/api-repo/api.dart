@@ -418,17 +418,20 @@ Future<ProductReviewModel?> productReview(id) async {
 }
 
 // delete cart item
-Future<DeleteCartModel?> deleteCartItem(userId, cartId) async {
-  var request =
-      http.MultipartRequest('POST', Uri.parse(_url.multipleDeleteCartList));
-  request.fields.addAll({'user_id': '$userId', 'cart_id[0]': '$cartId'});
+Future<DeleteCartModel?> deleteCartItem(cartId) async {
+try{  var request =
+http.MultipartRequest('POST', Uri.parse(_url.multipleDeleteCartList));
+request.fields.addAll(cartId);
 
-  http.StreamedResponse response = await request.send();
-
-  if (response.statusCode == 200) {
-    final str = await response.stream.bytesToString();
-    return DeleteCartModel.fromJson(json.decode(str));
-  } else {
-    return null;
-  }
+http.StreamedResponse response = await request.send();
+print(request.fields);
+if (response.statusCode == 200) {
+  final str = await response.stream.bytesToString();
+  print(str);
+  return DeleteCartModel.fromJson(json.decode(str));
+} else {
+  return null;
+}}catch(e){
+  print(e);
+}
 }
