@@ -15,7 +15,7 @@ class GetCartListModel {
     this.data,
   });
 
-  bool? status;
+  dynamic status;
   String? message;
   List<Datum>? data;
 
@@ -34,6 +34,7 @@ class GetCartListModel {
 
 class Datum {
   Datum({
+    this.cartId,
     this.userId,
     this.username,
     this.userPrfileImg,
@@ -47,6 +48,7 @@ class Datum {
     this.productList,
   });
 
+  String? cartId;
   String? userId;
   String? username;
   String? userPrfileImg;
@@ -60,6 +62,7 @@ class Datum {
   ProductList? productList;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+    cartId: json["cart_id"] == null ? null : json["cart_id"],
     userId: json["user_id"] == null ? null : json["user_id"],
     username: json["username"] == null ? null : json["username"],
     userPrfileImg: json["user_prfile_img"] == null ? null : json["user_prfile_img"],
@@ -74,6 +77,7 @@ class Datum {
   );
 
   Map<String, dynamic> toJson() => {
+    "cart_id": cartId == null ? null : cartId,
     "user_id": userId == null ? null : userId,
     "username": username == null ? null : username,
     "user_prfile_img": userPrfileImg == null ? null : userPrfileImg,

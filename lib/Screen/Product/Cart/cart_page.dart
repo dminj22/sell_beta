@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
+import 'package:sell_beta_customer/Api/model/delete_cart_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
 
@@ -13,11 +14,12 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-
   var itemNo = [];
   var selectItem = [];
   var deleteItem = [];
+  var multiDelete = {
 
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class _CartPageState extends State<CartPage> {
               ])),
         ),
         actions: [
+          deleteItem.isNotEmpty?
           Stack(
             alignment: Alignment.center,
             children: [
@@ -52,8 +55,17 @@ class _CartPageState extends State<CartPage> {
                 ],
               ),
               InkWell(
-                onTap: (){
-                  deleteCartItem(user.userId, "cartId");
+                onTap: () async {
+             DeleteCartModel? model = await deleteCartItem(user.userId, deleteItem[0]);
+             if(model!.status == true){
+               setState(() {
+                 deleteItem.clear();
+                 selectItem.removeAt(0);
+               });
+               showSnackBar(context, model.message);
+             }else{
+               showSnackBar(context, model.message);
+             }
                 },
                 child: ImageIcon(
                   AssetImage('images/icon/delete.png'),
@@ -62,7 +74,7 @@ class _CartPageState extends State<CartPage> {
                 ),
               ),
             ],
-          ),
+          ):Container(),
           SizedBox(
             width: width * .03,
           )
@@ -76,7 +88,7 @@ class _CartPageState extends State<CartPage> {
                 itemNo = snapshot.data.data
                     .map((e) => int.parse(e.quantity))
                     .toList();
-                selectItem = snapshot.data.data.map((i)=> false).toList();
+                selectItem = snapshot.data.data.map((i) => false).toList();
                 print(itemNo);
                 print(selectItem);
               }
@@ -89,20 +101,27 @@ class _CartPageState extends State<CartPage> {
                     itemBuilder: (BuildContext context, int index) {
                       var item = snapshot.data.data[index];
                       return Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 22, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 22, vertical: 6),
                         child: Card(
                           elevation: 3,
                           child: Row(
                             children: [
                               InkWell(
-                                onTap: (){
+                                onTap: () {
                                   setState(() {
                                     selectItem[index] = !selectItem[index];
-                                    if(deleteItem.contains(snapshot.data.data[index].productList.productId)){
-                                      deleteItem.remove(snapshot.data.data[index].productList.productId);
-                                    }else{
-                                      deleteItem.add(snapshot.data.data[index].productList.productId);
+                                    if (deleteItem.contains(
+                                        snapshot.data.data[index].cartId)) {
+                                      deleteItem.remove(
+                                          snapshot.data.data[index].cartId);
+                                      print(multiDelete);
+
+                                    } else {
+                                      deleteItem.add(
+                                          snapshot.data.data[index].cartId);
+                                      multiDelete.addAll({"cart[${multiDelete.length}]":"${snapshot.data.data[index].cartId}"});
+                                      print(multiDelete);
                                     }
 
                                     print(deleteItem);
@@ -118,42 +137,46 @@ class _CartPageState extends State<CartPage> {
                                           width: 98,
                                           decoration: BoxDecoration(
                                               image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      item.productList.thumbImage)),
-                                              border: Border.all(color: Colors.grey),
+                                                  image: NetworkImage(item
+                                                      .productList.thumbImage)),
+                                              border: Border.all(
+                                                  color: Colors.grey),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(10))),
-                                    child: Align(
-                                        alignment: Alignment.topRight,
-                                        child: SizedBox(
-                                          height: 24.0,
-                                          width: 24.0,
-                                          child: Checkbox(
-                                            activeColor: Color(0xffF15741),
-                                            onChanged: (bool? value) {
-
-                                            }, value: selectItem[index],),
-                                        )),
+                                          child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: SizedBox(
+                                                height: 24.0,
+                                                width: 24.0,
+                                                child: Checkbox(
+                                                  activeColor:
+                                                      Color(0xffF15741),
+                                                  onChanged: (bool? value) {},
+                                                  value: selectItem[index],
+                                                ),
+                                              )),
                                         )
                                       : Container(
-                                    child: Align(
-                                        alignment: Alignment.topRight,
-                                        child: SizedBox(
-                                          height: 24.0,
-                                          width: 24.0,
-                                          child: Checkbox(
-                                            activeColor: Color(0xffF15741),
-                                            onChanged: (bool? value) {
-
-                                            }, value: selectItem[index],),
-                                        )),
+                                          child: Align(
+                                              alignment: Alignment.topRight,
+                                              child: SizedBox(
+                                                height: 24.0,
+                                                width: 24.0,
+                                                child: Checkbox(
+                                                  activeColor:
+                                                      Color(0xffF15741),
+                                                  onChanged: (bool? value) {},
+                                                  value: selectItem[index],
+                                                ),
+                                              )),
                                           height: 98,
                                           width: 98,
                                           decoration: BoxDecoration(
                                               image: DecorationImage(
                                                   image: AssetImage(
                                                       "images/sample/no_image.jpg")),
-                                              border: Border.all(color: Colors.grey),
+                                              border: Border.all(
+                                                  color: Colors.grey),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(10))),
                                         ),
@@ -165,7 +188,8 @@ class _CartPageState extends State<CartPage> {
                                     ListTile(
                                       minVerticalPadding: 0,
                                       title: Text(
-                                        "${item.productList.title}".toUpperCase(),
+                                        "${item.productList.title}"
+                                            .toUpperCase(),
                                         style: GoogleFonts.inter(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600),
@@ -192,7 +216,7 @@ class _CartPageState extends State<CartPage> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "${item.productList.salePriceCurrency??""} ${item.productList.salePrice??""}",
+                                            "${item.productList.salePriceCurrency ?? ""} ${item.productList.salePrice ?? ""}",
                                             style: GoogleFonts.inter(
                                                 fontWeight: FontWeight.w700,
                                                 color: Color(0xffF15741)),
@@ -212,7 +236,8 @@ class _CartPageState extends State<CartPage> {
                                           InkWell(
                                               onTap: () {
                                                 setState(() {
-                                                  itemNo[index] = itemNo[index] + 1;
+                                                  itemNo[index] =
+                                                      itemNo[index] + 1;
                                                   print(itemNo);
                                                 });
                                               },
@@ -238,14 +263,12 @@ class _CartPageState extends State<CartPage> {
                     child: Card(
                       child: ListTile(
                         title: Text("Total:"),
-                        subtitle: Text("${snapshot.data.data[0].productList.salePriceCurrency} 1200"),
+                        subtitle: Text(
+                            "${snapshot.data.data[0].productList.salePriceCurrency} 1200"),
                         trailing: SizedBox(
                           width: 100,
                           child: CustomButtons(
-                            color: [
-                              Color(0xffF15741),
-                              Color(0xffF29F46)
-                            ],
+                            color: [Color(0xffF15741), Color(0xffF29F46)],
                             text: "Check Out",
                           ),
                         ),

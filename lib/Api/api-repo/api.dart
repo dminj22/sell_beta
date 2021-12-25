@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:sell_beta_customer/Api/base_url.dart';
 import 'package:sell_beta_customer/Api/model/add_to_cart_model.dart';
+import 'package:sell_beta_customer/Api/model/delete_cart_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_otp_verify_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_password_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_update_password_model.dart';
@@ -145,7 +146,6 @@ Future<ForgetUpdatePasswordModel?> forgetUpdatePassword(email, password) async {
   }
 }
 
-
 //update profile
 Future<UpdateProfileModel?> updateProfile(
     userId, name, phone, address, country, state, city, zip) async {
@@ -172,7 +172,6 @@ Future<UpdateProfileModel?> updateProfile(
     return null;
   }
 }
-
 
 //upload Profile Pic
 Future<UpdateProfileModel?> uploadProfilePic(
@@ -202,7 +201,6 @@ Future<UpdateProfileModel?> uploadProfilePic(
     return null;
   }
 }
-
 
 // get categories
 Future<GetCategoryModel?> getCategories() async {
@@ -272,11 +270,11 @@ Future<GetProductBySubIdModel?> getAllProductBySubId(id) async {
 }
 
 //get single product
-Future<SingleProductViewModel?> getSingleProduct(id , userId) async {
+Future<SingleProductViewModel?> getSingleProduct(id, userId) async {
   try {
     var request =
         http.MultipartRequest('POST', Uri.parse(_url.singleProductDetails));
-    request.fields.addAll({'product_id': id , "user_id":userId});
+    request.fields.addAll({'product_id': id, "user_id": userId});
 
     http.StreamedResponse response = await request.send();
     _log.d("$request || ${request.fields}");
@@ -347,7 +345,8 @@ Future<GetCartListModel?> getCartList(userId) async {
 }
 
 // add to cart
-Future<AddToCartModel?> addToCart(userId , vendorId , prodId , quantity , price , size , color) async {
+Future<AddToCartModel?> addToCart(
+    userId, vendorId, prodId, quantity, price, size, color) async {
   var request = http.MultipartRequest('POST', Uri.parse(_url.addToCart));
   request.fields.addAll({
     'user_id': '$userId',
@@ -362,24 +361,19 @@ Future<AddToCartModel?> addToCart(userId , vendorId , prodId , quantity , price 
   http.StreamedResponse response = await request.send();
   _log.d("$request || ${request.fields}");
   if (response.statusCode == 200) {
-     final str  = await response.stream.bytesToString();
-     _log.e(str);
-     return addToCartModelFromJson(str);
-  }
-  else {
+    final str = await response.stream.bytesToString();
+    _log.e(str);
+    return addToCartModelFromJson(str);
+  } else {
     print(response.reasonPhrase);
   }
 }
 
 // get vendor details
-Future<VendorDetailModel?> getVendorDetails(userId)async{
-
-  var request = http.MultipartRequest('POST', Uri.parse(_url.vendorShopDetails));
-  request.fields.addAll({
-    'vendor_id': '$userId'
-  });
-
-
+Future<VendorDetailModel?> getVendorDetails(userId) async {
+  var request =
+      http.MultipartRequest('POST', Uri.parse(_url.vendorShopDetails));
+  request.fields.addAll({'vendor_id': '$userId'});
 
   http.StreamedResponse response = await request.send();
 
@@ -387,65 +381,54 @@ Future<VendorDetailModel?> getVendorDetails(userId)async{
     final str = await response.stream.bytesToString();
     _log.d(str);
     return vendorDetailModelFromJson(str);
-  }
-  else {
+  } else {
     return null;
   }
-
 }
 
 // get related product
-Future<GetAllProductBySubCatId?> getRelatedProduct(id)async{
-
-  var request = http.MultipartRequest('POST', Uri.parse(_url.getAllProductBySubCategory));
-  request.fields.addAll({
-    'sub_category_id': '$id'
-  });
+Future<GetAllProductBySubCatId?> getRelatedProduct(id) async {
+  var request =
+      http.MultipartRequest('POST', Uri.parse(_url.getAllProductBySubCategory));
+  request.fields.addAll({'sub_category_id': '$id'});
 
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-  return GetAllProductBySubCatId.fromJson(json.decode(str));
-  }
-  else {
+    return GetAllProductBySubCatId.fromJson(json.decode(str));
+  } else {
     return null;
   }
 }
 
 // product review
-Future<ProductReviewModel?> productReview(id)async{
-  var request = http.MultipartRequest('POST', Uri.parse(_url.getProductReviewsList));
-  request.fields.addAll({
-    'product_id': '$id'
-  });
+Future<ProductReviewModel?> productReview(id) async {
+  var request =
+      http.MultipartRequest('POST', Uri.parse(_url.getProductReviewsList));
+  request.fields.addAll({'product_id': '$id'});
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
     return productReviewModelFromJson(str);
-  }
-  else {
+  } else {
     return null;
   }
-
 }
 
 // delete cart item
-Future deleteCartItem(userId , cartId)async{
-  var request = http.MultipartRequest('POST', Uri.parse(_url.multipleDeleteCartList));
-  request.fields.addAll({
-    'user_id': '$userId',
-    'cart_id[0]': '$cartId'
-  });
+Future<DeleteCartModel?> deleteCartItem(userId, cartId) async {
+  var request =
+      http.MultipartRequest('POST', Uri.parse(_url.multipleDeleteCartList));
+  request.fields.addAll({'user_id': '$userId', 'cart_id[0]': '$cartId'});
 
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
+    final str = await response.stream.bytesToString();
+    return DeleteCartModel.fromJson(json.decode(str));
+  } else {
+    return null;
   }
-  else {
-    print(response.reasonPhrase);
-  }
-
 }
