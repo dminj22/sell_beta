@@ -19,6 +19,8 @@ class _CartPageState extends State<CartPage> {
   var itemNo = [];
   var selectItem = [];
   var deleteItem = [];
+  var price = [];
+  dynamic totalPrice = 0;
   Map<String, String> multiDelete = {};
 
   @override
@@ -115,6 +117,12 @@ class _CartPageState extends State<CartPage> {
                               itemCount: snapshot.data.data.length,
                               itemBuilder: (BuildContext context, int index) {
                                 var item = snapshot.data.data[index];
+                                if (snapshot.data.status && price.isEmpty) {
+                                  var a = snapshot.data.data.map((e) =>
+                                      price.add(e.productList.salePrice));
+                                  print(a);
+
+                                }
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 22, vertical: 6),
@@ -256,7 +264,7 @@ class _CartPageState extends State<CartPage> {
                                                           .spaceBetween,
                                                   children: [
                                                     Text(
-                                                      "${item.productList.salePriceCurrency ?? ""} ${item.productList.salePrice ?? ""}",
+                                                      "${item.productList.salePriceCurrency ?? ""} ${double.parse(item.productList.salePrice) * itemNo[index]}",
                                                       style: GoogleFonts.inter(
                                                           fontWeight:
                                                               FontWeight.w700,
@@ -312,7 +320,7 @@ class _CartPageState extends State<CartPage> {
                                 child: ListTile(
                                   title: Text("Total:"),
                                   subtitle: Text(
-                                      "${snapshot.data.data[0].productList.salePriceCurrency} 1200"),
+                                      "${snapshot.data.data[0].productList.salePriceCurrency} $totalPrice"),
                                   trailing: SizedBox(
                                     width: 100,
                                     child: CustomButtons(
@@ -328,7 +336,37 @@ class _CartPageState extends State<CartPage> {
                             )
                           ],
                         )
-                      : Container()
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            color: Colors.white,
+                            height: height * .3,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text("There are no items in this cart "),
+                                OutlinedButton(
+                                    style: ButtonStyle(
+                                        side: MaterialStateProperty.all(
+                                            BorderSide(
+                                                color: Color(0xffF15741)))),
+                                    onPressed: () {},
+                                    child: Text(
+                                      "Continue Shopping",
+                                      style:
+                                          TextStyle(color: Color(0xffF15741)),
+                                    )),
+                                Divider(),
+                                TextButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      "View my History",
+                                      style: TextStyle(color: Colors.black),
+                                    ))
+                              ],
+                            ),
+                          ),
+                        )
                 ],
               );
             } else if (snapshot.hasError) {
