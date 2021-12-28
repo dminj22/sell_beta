@@ -20,8 +20,10 @@ class _CartPageState extends State<CartPage> {
   var selectItem = [];
   var deleteItem = [];
   var price = [];
-  dynamic totalPrice = 0;
+
   Map<String, String> multiDelete = {};
+
+  dynamic newChange;
 
   @override
   void initState() {
@@ -29,11 +31,14 @@ class _CartPageState extends State<CartPage> {
     super.initState();
   }
 
+  dynamic totalPrice = 0;
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     var user = Provider.of<UserProvider>(context);
+
     return Scaffold(
       backgroundColor: Color(0xffE5E5E5),
       appBar: AppBar(
@@ -69,7 +74,10 @@ class _CartPageState extends State<CartPage> {
                             await deleteCartItem(multiDelete);
                         if (model!.status == true) {
                           setState(() {
-                            deleteItem.clear();
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CartPage()));
                           });
                           showSnackBar(context, model.message);
                         } else {
@@ -100,12 +108,22 @@ class _CartPageState extends State<CartPage> {
                       .map((e) => int.parse(e.quantity))
                       .toList();
                   selectItem = snapshot.data.data.map((i) => false).toList();
-                  print(itemNo);
-                  print(selectItem);
+                  price = snapshot.data.data
+                      .map((i) => double.parse(i.productList.salePrice))
+                      .toList();
                 }
+              } else {}
+
+              if (newChange == null || newChange) {
+                totalPrice = 0;
+                for (var i = 0; i < itemNo.length; i++) {
+                  totalPrice += itemNo[i] * price[i];
+                }
+                newChange = false;
               } else {
-                print("Not Available");
+                print("nothing");
               }
+
               return ListView(
                 children: [
                   snapshot.data.status
@@ -117,12 +135,6 @@ class _CartPageState extends State<CartPage> {
                               itemCount: snapshot.data.data.length,
                               itemBuilder: (BuildContext context, int index) {
                                 var item = snapshot.data.data[index];
-                                if (snapshot.data.status && price.isEmpty) {
-                                  var a = snapshot.data.data.map((e) =>
-                                      price.add(e.productList.salePrice));
-                                  print(a);
-
-                                }
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 22, vertical: 6),
@@ -150,10 +162,7 @@ class _CartPageState extends State<CartPage> {
                                                   "cart_id[$index]":
                                                       "${snapshot.data.data[index].cartId}"
                                                 });
-                                                print(multiDelete);
                                               }
-
-                                              print(deleteItem);
                                             });
                                           },
                                           child: Padding(
@@ -279,6 +288,7 @@ class _CartPageState extends State<CartPage> {
                                                               itemNo[index] =
                                                                   itemNo[index] -
                                                                       1;
+                                                              newChange = true;
                                                             }
                                                           });
                                                         },
@@ -292,6 +302,7 @@ class _CartPageState extends State<CartPage> {
                                                             itemNo[index] =
                                                                 itemNo[index] +
                                                                     1;
+                                                            newChange = true;
                                                             print(itemNo);
                                                           });
                                                         },
@@ -336,37 +347,7 @@ class _CartPageState extends State<CartPage> {
                             )
                           ],
                         )
-                      : Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            color: Colors.white,
-                            height: height * .3,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text("There are no items in this cart "),
-                                OutlinedButton(
-                                    style: ButtonStyle(
-                                        side: MaterialStateProperty.all(
-                                            BorderSide(
-                                                color: Color(0xffF15741)))),
-                                    onPressed: () {},
-                                    child: Text(
-                                      "Continue Shopping",
-                                      style:
-                                          TextStyle(color: Color(0xffF15741)),
-                                    )),
-                                Divider(),
-                                TextButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View my History",
-                                      style: TextStyle(color: Colors.black),
-                                    ))
-                              ],
-                            ),
-                          ),
-                        )
+                      : NoItem()
                 ],
               );
             } else if (snapshot.hasError) {
@@ -375,6 +356,44 @@ class _CartPageState extends State<CartPage> {
               return Loading();
             }
           }),
+    );
+  }
+}
+
+class NoItem extends StatelessWidget {
+  const NoItem({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        color: Colors.white,
+        height: height * .3,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text("There are no items in this cart "),
+            OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: Color(0xffF15741)))),
+                onPressed: () {},
+                child: Text(
+                  "Continue Shopping",
+                  style: TextStyle(color: Color(0xffF15741)),
+                )),
+            Divider(),
+            TextButton(
+                onPressed: () {},
+                child: Text(
+                  "View my History",
+                  style: TextStyle(color: Colors.black),
+                ))
+          ],
+        ),
+      ),
     );
   }
 }
