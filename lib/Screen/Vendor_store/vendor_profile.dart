@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Screen/Product/view_one_product.dart';
+import 'package:sell_beta_customer/Screen/Vendor_store/vendor_follower_list.dart';
 
 
 class VendorProfile extends StatefulWidget {
@@ -123,7 +124,7 @@ class _VendorProfileState extends State<VendorProfile> {
                                               vendor[0].logo))),
                                 ),
                                 title: Text(
-                                  "Primo Space >",
+                                  "${vendor[0].company}",
                                   style: GoogleFonts.inter(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
@@ -132,7 +133,7 @@ class _VendorProfileState extends State<VendorProfile> {
                                 subtitle: Row(
                                   children: [
                                     Text(
-                                      "4.6/",
+                                      "${vendor[0].ratingTotal}/",
                                       style: GoogleFonts.inter(
                                           fontSize: 10,
                                           fontWeight: FontWeight.w700,
@@ -146,7 +147,7 @@ class _VendorProfileState extends State<VendorProfile> {
                                           color: Color(0xffF7941D)),
                                     ),
                                     RatingBarIndicator(
-                                      rating: 4,
+                                      rating: double.parse(vendor[0].ratingTotal),
                                       itemBuilder: (context, index) =>
                                           Icon(
                                             Icons.star,
@@ -219,21 +220,26 @@ class _VendorProfileState extends State<VendorProfile> {
                                       ],
                                     ),
                                   ),
-                                  RichText(
-                                    text: TextSpan(
-                                      text: '10.7%',
-                                      style: GoogleFonts.inter(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 16,
-                                          color: Colors.white),
-                                      children: const <TextSpan>[
-                                        TextSpan(
-                                            text: 'Followers',
-                                            style: TextStyle(
-                                                fontWeight:
-                                                FontWeight.w400,
-                                                fontSize: 14)),
-                                      ],
+                                  InkWell(
+                                    onTap: (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> VendorFollowerList(vendorId: widget.vendorId,)));
+                                    },
+                                    child: RichText(
+                                      text: TextSpan(
+                                        text: '${vendor[0].vendorFollowerCount} ',
+                                        style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                            color: Colors.white),
+                                        children: const <TextSpan>[
+                                          TextSpan(
+                                              text: 'Followers',
+                                              style: TextStyle(
+                                                  fontWeight:
+                                                  FontWeight.w400,
+                                                  fontSize: 14)),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],

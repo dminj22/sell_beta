@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:sell_beta_customer/Api/base_url.dart';
 import 'package:sell_beta_customer/Api/model/add_to_cart_model.dart';
+import 'package:sell_beta_customer/Api/model/customer_order_list_model.dart';
 import 'package:sell_beta_customer/Api/model/delete_cart_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_otp_verify_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_password_model.dart';
@@ -12,7 +13,9 @@ import 'package:sell_beta_customer/Api/model/forget_update_password_model.dart';
 import 'package:sell_beta_customer/Api/model/get_all_notification_model.dart';
 import 'package:sell_beta_customer/Api/model/get_all_product_by_sub_cat_id.dart';
 import 'package:sell_beta_customer/Api/model/get_cart_list_model.dart';
+import 'package:sell_beta_customer/Api/model/get_cat_sub_cat_model.dart';
 import 'package:sell_beta_customer/Api/model/get_category_model.dart';
+import 'package:sell_beta_customer/Api/model/get_follower_model.dart';
 import 'package:sell_beta_customer/Api/model/get_product_by_sub_id_model.dart';
 import 'package:sell_beta_customer/Api/model/get_sub_category_model.dart';
 import 'package:sell_beta_customer/Api/model/login_model.dart';
@@ -419,19 +422,72 @@ Future<ProductReviewModel?> productReview(id) async {
 
 // delete cart item
 Future<DeleteCartModel?> deleteCartItem(cartId) async {
-try{  var request =
-http.MultipartRequest('POST', Uri.parse(_url.multipleDeleteCartList));
-request.fields.addAll(cartId);
+  try {
+    var request =
+        http.MultipartRequest('POST', Uri.parse(_url.multipleDeleteCartList));
+    request.fields.addAll(cartId);
 
-http.StreamedResponse response = await request.send();
-print(request.fields);
-if (response.statusCode == 200) {
-  final str = await response.stream.bytesToString();
-  print(str);
-  return DeleteCartModel.fromJson(json.decode(str));
-} else {
-  return null;
-}}catch(e){
-  print(e);
+    http.StreamedResponse response = await request.send();
+    print(request.fields);
+    if (response.statusCode == 200) {
+      final str = await response.stream.bytesToString();
+      print(str);
+      return DeleteCartModel.fromJson(json.decode(str));
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print(e);
+  }
 }
+
+Future<GetFollowerModel?> getFollowerList(id) async {
+  var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'https://bodyrecomp.app/app/project/ecom/api/getvendorFollowerList'));
+  request.fields.addAll({'vendor_id': '$id'});
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return GetFollowerModel.fromJson(json.decode(str));
+  } else {
+    return null;
+  }
+}
+
+Future<GetCatSubCatModel?> getCatSubCat(id) async {
+  var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'https://bodyrecomp.app/app/project/ecom/api/vendor_categories_subcategories_brand'));
+  request.fields.addAll({'vendor_id': '$id'});
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return GetCatSubCatModel.fromJson(json.decode(str));
+  } else {
+    return null;
+  }
+}
+
+Future<CustomerOrderListModel?> customerOrderList()async{
+  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/customerorderlist'));
+  request.fields.addAll({
+    'user_id': '1'
+  });
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return CustomerOrderListModel.fromJson(json.decode(str));
+  }
+  else {
+    return null;
+  }
 }

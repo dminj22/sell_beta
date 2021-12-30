@@ -15,7 +15,7 @@ class VendorDetailModel {
     this.data,
   });
 
-  dynamic status;
+  bool? status;
   String? message;
   List<Datum>? data;
 
@@ -40,6 +40,7 @@ class Datum {
     this.address,
     this.ratingTotal,
     this.logo,
+    this.vendorFollowerCount,
   });
 
   String? name;
@@ -48,6 +49,7 @@ class Datum {
   String? address;
   String? ratingTotal;
   String? logo;
+  int? vendorFollowerCount;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     name: json["name"] == null ? null : json["name"],
@@ -56,6 +58,7 @@ class Datum {
     address: json["address"] == null ? null : json["address"],
     ratingTotal: json["rating_total"] == null ? null : json["rating_total"],
     logo: json["logo"] == null ? null : json["logo"],
+    vendorFollowerCount: json["vendorFollowerCount"] == null ? null : json["vendorFollowerCount"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -65,5 +68,6 @@ class Datum {
     "address": address == null ? null : address,
     "rating_total": ratingTotal == null ? null : ratingTotal,
     "logo": logo == null ? null : logo,
+    "vendorFollowerCount": vendorFollowerCount == null ? null : vendorFollowerCount,
   };
 }

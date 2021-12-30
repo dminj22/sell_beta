@@ -252,7 +252,7 @@ class _VendorProductsState extends State<VendorProducts> {
               } else if (snapshot.hasError) {
                 return Icon(Icons.error_outline);
               } else {
-                return Loading();
+                return Center(child: CircularProgressIndicator());
               }
             })
       ],

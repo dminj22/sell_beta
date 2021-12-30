@@ -6,6 +6,8 @@ import 'package:sell_beta_customer/Api/api-repo/api.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Config/icon_config.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
+import 'package:sell_beta_customer/Screen/Orders/order_list.dart';
+import 'package:sell_beta_customer/Screen/Profile/profile_edit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -53,29 +55,34 @@ class _HomePageState extends State<HomePage> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                      data.profilePhotoUrl != null?
-                                        CircleAvatar(
-                                          radius: 30,
-                                          backgroundImage:NetworkImage(data.profilePhotoUrl),
-                                        ):
-                                        CircleAvatar(
-                                          radius: 30,
-                                          backgroundImage:AssetImage(_drawerIcon.sampleIcon),
-                                        ),
-                                        SizedBox(
-                                          width: width * .04,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text("${data.username ?? "No User"}" , style: font1,),
-                                            Text("${data.email ?? "No Email"}" , style: font2,),
-                                          ],
-                                        )
-                                      ],
+                                    InkWell(
+                                      onTap: (){
+                                        Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfileEditPage()));
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                        data.profilePhotoUrl != null?
+                                          CircleAvatar(
+                                            radius: 30,
+                                            backgroundImage:NetworkImage(data.profilePhotoUrl),
+                                          ):
+                                          CircleAvatar(
+                                            radius: 30,
+                                            backgroundImage:AssetImage(_drawerIcon.sampleIcon),
+                                          ),
+                                          SizedBox(
+                                            width: width * .04,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("${data.username ?? "No User"}" , style: font1,),
+                                              Text("${data.email ?? "No Email"}" , style: font2,),
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     )
                                   ],
                                 ),
@@ -95,8 +102,18 @@ class _HomePageState extends State<HomePage> {
                         title: 'Home',
                       ),
                       DrawerListTile(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfileEditPage()));
+                        },
                         url: _drawerIcon.userIcon,
                         title: 'My Profile',
+                      ),
+                      DrawerListTile(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> OrderListPage()));
+                        },
+                        url: _drawerIcon.categoryIcon,
+                        title: 'My Orders',
                       ),
                       DrawerListTile(
                         onTap: (){
