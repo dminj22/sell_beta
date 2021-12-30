@@ -476,7 +476,7 @@ Future<GetCatSubCatModel?> getCatSubCat(id) async {
 }
 
 Future<CustomerOrderListModel?> customerOrderList()async{
-  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/customerorderlist'));
+  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/customerorder_list'));
   request.fields.addAll({
     'user_id': '1'
   });
@@ -485,9 +485,32 @@ Future<CustomerOrderListModel?> customerOrderList()async{
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
+    print(str);
     return CustomerOrderListModel.fromJson(json.decode(str));
   }
   else {
     return null;
   }
+}
+
+
+Future<CustomerOrderListModel?> singleOrderDetails()async{
+
+  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/singleorderview'));
+  request.fields.addAll({
+    'order_id': '2'
+  });
+
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    print(str);
+    return CustomerOrderListModel.fromJson(json.decode(str));
+  }
+  else {
+    return null;
+  }
+
 }

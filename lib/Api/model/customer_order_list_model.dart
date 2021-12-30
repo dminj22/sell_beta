@@ -1,213 +1,305 @@
-/// status : true
-/// message : "order list get successfully"
-/// data : [{"order_id":"4","order_code":"82120830","vendor_id":"4","user_id":"1","product_id":"2","address_id":"1","quantity":"2","amount":"20.00","total_amount":"40.00","tax_charge":"0.00","shipping_charge":"0.00","coupon":"","no_of_product":"2","delivery_status":"Picked Up","payment_status":"paid","payment_method":"COD","refund":"No Refund","order_date":"2021-10-16","status":"1","date_time":"2021-10-14 11:41:58","username":"Manish","profile_photo_url":""},{"order_id":"2","order_code":"82120830","vendor_id":"4","user_id":"1","product_id":"2","address_id":"1","quantity":"2","amount":"20.00","total_amount":"40.00","tax_charge":"0.00","shipping_charge":"0.00","coupon":"","no_of_product":"2","delivery_status":"Delivered","payment_status":"paid","payment_method":"COD","refund":"No Refund","order_date":"2021-10-16","status":"1","date_time":"2021-10-14 11:41:58","username":"Manish","profile_photo_url":""}]
+// To parse this JSON data, do
+//
+//     final customerOrderListModel = customerOrderListModelFromJson(jsonString);
+
+import 'dart:convert';
+
+CustomerOrderListModel customerOrderListModelFromJson(String str) => CustomerOrderListModel.fromJson(json.decode(str));
+
+String customerOrderListModelToJson(CustomerOrderListModel data) => json.encode(data.toJson());
 
 class CustomerOrderListModel {
   CustomerOrderListModel({
-      bool? status, 
-      String? message, 
-      List<Data>? data,}){
-    _status = status;
-    _message = message;
-    _data = data;
+    this.status,
+    this.message,
+    this.data,
+  });
+
+  bool? status;
+  String? message;
+  List<Datum>? data;
+
+  factory CustomerOrderListModel.fromJson(Map<String, dynamic> json) => CustomerOrderListModel(
+    status: json["status"] == null ? null : json["status"],
+    message: json["message"] == null ? null : json["message"],
+    data: json["data"] == null ? null : List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "status": status == null ? null : status,
+    "message": message == null ? null : message,
+    "data": data == null ? null : List<dynamic>.from(data!.map((x) => x.toJson())),
+  };
 }
 
-  CustomerOrderListModel.fromJson(dynamic json) {
-    _status = json['status'];
-    _message = json['message'];
-    if (json['data'] != null) {
-      _data = [];
-      json['data'].forEach((v) {
-        _data?.add(Data.fromJson(v));
-      });
-    }
-  }
-  bool? _status;
-  String? _message;
-  List<Data>? _data;
+class Datum {
+  Datum({
+    this.orderId,
+    this.orderCode,
+    this.vendorId,
+    this.userId,
+    this.productId,
+    this.addressId,
+    this.quantity,
+    this.amount,
+    this.totalAmount,
+    this.taxCharge,
+    this.shippingCharge,
+    this.coupon,
+    this.noOfProduct,
+    this.deliveryStatus,
+    this.paymentStatus,
+    this.paymentMethod,
+    this.refund,
+    this.orderDate,
+    this.productList,
+    this.vendorDetails,
+    this.userDetails,
+    this.shippingAddress,
+  });
 
-  bool? get status => _status;
-  String? get message => _message;
-  List<Data>? get data => _data;
+  String? orderId;
+  String? orderCode;
+  String? vendorId;
+  String ?userId;
+  String ?productId;
+  String ?addressId;
+  String ?quantity;
+  String ?amount;
+  String ?totalAmount;
+  dynamic taxCharge;
+  String? shippingCharge;
+  String? coupon;
+  String? noOfProduct;
+  String? deliveryStatus;
+  String? paymentStatus;
+  String? paymentMethod;
+  String? refund;
+  DateTime? orderDate;
+  List<ProductList>? productList;
+  VendorDetails? vendorDetails;
+  UserDetails? userDetails;
+  ShippingAddress? shippingAddress;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['status'] = _status;
-    map['message'] = _message;
-    if (_data != null) {
-      map['data'] = _data?.map((v) => v.toJson()).toList();
-    }
-    return map;
-  }
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+    orderId: json["order_id "] == null ? null : json["order_id "],
+    orderCode: json["order_code"] == null ? null : json["order_code"],
+    vendorId: json["vendor_id"] == null ? null : json["vendor_id"],
+    userId: json["user_id "] == null ? null : json["user_id "],
+    productId: json["product_id "] == null ? null : json["product_id "],
+    addressId: json["address_id"] == null ? null : json["address_id"],
+    quantity: json["quantity"] == null ? null : json["quantity"],
+    amount: json["amount"] == null ? null : json["amount"],
+    totalAmount: json["total_amount"] == null ? null : json["total_amount"],
+    taxCharge: json["tax_charge"],
+    shippingCharge: json["shipping_charge"] == null ? null : json["shipping_charge"],
+    coupon: json["coupon"] == null ? null : json["coupon"],
+    noOfProduct: json["no_of_product"] == null ? null : json["no_of_product"],
+    deliveryStatus: json["delivery_status"] == null ? null : json["delivery_status"],
+    paymentStatus: json["payment_status"] == null ? null : json["payment_status"],
+    paymentMethod: json["payment_method"] == null ? null : json["payment_method"],
+    refund: json["refund"] == null ? null : json["refund"],
+    orderDate: json["order_date"] == null ? null : DateTime.parse(json["order_date"]),
+    productList: json["product_list"] == null ? null : List<ProductList>.from(json["product_list"].map((x) => ProductList.fromJson(x))),
+    vendorDetails: json["vendor_details"] == null ? null : VendorDetails.fromJson(json["vendor_details"]),
+    userDetails: json["user_details"] == null ? null : UserDetails.fromJson(json["user_details"]),
+    shippingAddress: json["shipping_address"] == null ? null : ShippingAddress.fromJson(json["shipping_address"]),
+  );
 
+  Map<String, dynamic> toJson() => {
+    "order_id ": orderId == null ? null : orderId,
+    "order_code": orderCode == null ? null : orderCode,
+    "vendor_id": vendorId == null ? null : vendorId,
+    "user_id ": userId == null ? null : userId,
+    "product_id ": productId == null ? null : productId,
+    "address_id": addressId == null ? null : addressId,
+    "quantity": quantity == null ? null : quantity,
+    "amount": amount == null ? null : amount,
+    "total_amount": totalAmount == null ? null : totalAmount,
+    "tax_charge": taxCharge,
+    "shipping_charge": shippingCharge == null ? null : shippingCharge,
+    "coupon": coupon == null ? null : coupon,
+    "no_of_product": noOfProduct == null ? null : noOfProduct,
+    "delivery_status": deliveryStatus == null ? null : deliveryStatus,
+    "payment_status": paymentStatus == null ? null : paymentStatus,
+    "payment_method": paymentMethod == null ? null : paymentMethod,
+    "refund": refund == null ? null : refund,
+    "order_date": orderDate == null ? null : "${orderDate!.year.toString().padLeft(4, '0')}-${orderDate!.month.toString().padLeft(2, '0')}-${orderDate!.day.toString().padLeft(2, '0')}",
+    "product_list": productList == null ? null : List<dynamic>.from(productList!.map((x) => x.toJson())),
+    "vendor_details": vendorDetails == null ? null : vendorDetails!.toJson(),
+    "user_details": userDetails == null ? null : userDetails!.toJson(),
+    "shipping_address": shippingAddress == null ? null : shippingAddress!.toJson(),
+  };
 }
 
-/// order_id : "4"
-/// order_code : "82120830"
-/// vendor_id : "4"
-/// user_id : "1"
-/// product_id : "2"
-/// address_id : "1"
-/// quantity : "2"
-/// amount : "20.00"
-/// total_amount : "40.00"
-/// tax_charge : "0.00"
-/// shipping_charge : "0.00"
-/// coupon : ""
-/// no_of_product : "2"
-/// delivery_status : "Picked Up"
-/// payment_status : "paid"
-/// payment_method : "COD"
-/// refund : "No Refund"
-/// order_date : "2021-10-16"
-/// status : "1"
-/// date_time : "2021-10-14 11:41:58"
-/// username : "Manish"
-/// profile_photo_url : ""
+class ProductList {
+  ProductList({
+    this.productId,
+    this.sku,
+    this.title,
+    this.description,
+    this.salePrice,
+    this.salePriceCurrency,
+    this.image,
+  });
 
-class Data {
-  Data({
-      String? orderId, 
-      String? orderCode, 
-      String? vendorId, 
-      String? userId, 
-      String? productId, 
-      String? addressId, 
-      String? quantity, 
-      String? amount, 
-      String? totalAmount, 
-      String? taxCharge, 
-      String? shippingCharge, 
-      String? coupon, 
-      String? noOfProduct, 
-      String? deliveryStatus, 
-      String? paymentStatus, 
-      String? paymentMethod, 
-      String? refund, 
-      String? orderDate, 
-      String? status, 
-      String? dateTime, 
-      String? username, 
-      String? profilePhotoUrl,}){
-    _orderId = orderId;
-    _orderCode = orderCode;
-    _vendorId = vendorId;
-    _userId = userId;
-    _productId = productId;
-    _addressId = addressId;
-    _quantity = quantity;
-    _amount = amount;
-    _totalAmount = totalAmount;
-    _taxCharge = taxCharge;
-    _shippingCharge = shippingCharge;
-    _coupon = coupon;
-    _noOfProduct = noOfProduct;
-    _deliveryStatus = deliveryStatus;
-    _paymentStatus = paymentStatus;
-    _paymentMethod = paymentMethod;
-    _refund = refund;
-    _orderDate = orderDate;
-    _status = status;
-    _dateTime = dateTime;
-    _username = username;
-    _profilePhotoUrl = profilePhotoUrl;
+  String ?productId;
+  String ?sku;
+  String ?title;
+  String ?description;
+  String? salePrice;
+  String? salePriceCurrency;
+  String? image;
+
+  factory ProductList.fromJson(Map<String, dynamic> json) => ProductList(
+    productId: json["product_id"] == null ? null : json["product_id"],
+    sku: json["sku"] == null ? null : json["sku"],
+    title: json["title"] == null ? null : json["title"],
+    description: json["description"] == null ? null : json["description"],
+    salePrice: json["sale_price"] == null ? null : json["sale_price"],
+    salePriceCurrency: json["sale_price_currency"] == null ? null : json["sale_price_currency"],
+    image: json["image"] == null ? null : json["image"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "product_id": productId == null ? null : productId,
+    "sku": sku == null ? null : sku,
+    "title": title == null ? null : title,
+    "description": description == null ? null : description,
+    "sale_price": salePrice == null ? null : salePrice,
+    "sale_price_currency": salePriceCurrency == null ? null : salePriceCurrency,
+    "image": image == null ? null : image,
+  };
 }
 
-  Data.fromJson(dynamic json) {
-    _orderId = json['order_id'];
-    _orderCode = json['order_code'];
-    _vendorId = json['vendor_id'];
-    _userId = json['user_id'];
-    _productId = json['product_id'];
-    _addressId = json['address_id'];
-    _quantity = json['quantity'];
-    _amount = json['amount'];
-    _totalAmount = json['total_amount'];
-    _taxCharge = json['tax_charge'];
-    _shippingCharge = json['shipping_charge'];
-    _coupon = json['coupon'];
-    _noOfProduct = json['no_of_product'];
-    _deliveryStatus = json['delivery_status'];
-    _paymentStatus = json['payment_status'];
-    _paymentMethod = json['payment_method'];
-    _refund = json['refund'];
-    _orderDate = json['order_date'];
-    _status = json['status'];
-    _dateTime = json['date_time'];
-    _username = json['username'];
-    _profilePhotoUrl = json['profile_photo_url'];
-  }
-  String? _orderId;
-  String? _orderCode;
-  String? _vendorId;
-  String? _userId;
-  String? _productId;
-  String? _addressId;
-  String? _quantity;
-  String? _amount;
-  String? _totalAmount;
-  String? _taxCharge;
-  String? _shippingCharge;
-  String? _coupon;
-  String? _noOfProduct;
-  String? _deliveryStatus;
-  String? _paymentStatus;
-  String? _paymentMethod;
-  String? _refund;
-  String? _orderDate;
-  String? _status;
-  String? _dateTime;
-  String? _username;
-  String? _profilePhotoUrl;
+class ShippingAddress {
+  ShippingAddress({
+    this.addressId,
+    this.userId,
+    this.stateName,
+    this.cityName,
+    this.fullName,
+    this.email,
+    this.address,
+    this.area,
+    this.zip,
+    this.mobileNo,
+  });
 
-  String? get orderId => _orderId;
-  String? get orderCode => _orderCode;
-  String? get vendorId => _vendorId;
-  String? get userId => _userId;
-  String? get productId => _productId;
-  String? get addressId => _addressId;
-  String? get quantity => _quantity;
-  String? get amount => _amount;
-  String? get totalAmount => _totalAmount;
-  String? get taxCharge => _taxCharge;
-  String? get shippingCharge => _shippingCharge;
-  String? get coupon => _coupon;
-  String? get noOfProduct => _noOfProduct;
-  String? get deliveryStatus => _deliveryStatus;
-  String? get paymentStatus => _paymentStatus;
-  String? get paymentMethod => _paymentMethod;
-  String? get refund => _refund;
-  String? get orderDate => _orderDate;
-  String? get status => _status;
-  String? get dateTime => _dateTime;
-  String? get username => _username;
-  String? get profilePhotoUrl => _profilePhotoUrl;
+  String ?addressId;
+  String ?userId;
+  String ?stateName;
+  String ?cityName;
+  String ?fullName;
+  String ?email;
+  String ?address;
+  String ?area;
+  String ?zip;
+  String ?mobileNo;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['order_id'] = _orderId;
-    map['order_code'] = _orderCode;
-    map['vendor_id'] = _vendorId;
-    map['user_id'] = _userId;
-    map['product_id'] = _productId;
-    map['address_id'] = _addressId;
-    map['quantity'] = _quantity;
-    map['amount'] = _amount;
-    map['total_amount'] = _totalAmount;
-    map['tax_charge'] = _taxCharge;
-    map['shipping_charge'] = _shippingCharge;
-    map['coupon'] = _coupon;
-    map['no_of_product'] = _noOfProduct;
-    map['delivery_status'] = _deliveryStatus;
-    map['payment_status'] = _paymentStatus;
-    map['payment_method'] = _paymentMethod;
-    map['refund'] = _refund;
-    map['order_date'] = _orderDate;
-    map['status'] = _status;
-    map['date_time'] = _dateTime;
-    map['username'] = _username;
-    map['profile_photo_url'] = _profilePhotoUrl;
-    return map;
-  }
+  factory ShippingAddress.fromJson(Map<String, dynamic> json) => ShippingAddress(
+    addressId: json["address_id"] == null ? null : json["address_id"],
+    userId: json["user_id"] == null ? null : json["user_id"],
+    stateName: json["state_name"] == null ? null : json["state_name"],
+    cityName: json["city_name"] == null ? null : json["city_name"],
+    fullName: json["full_name"] == null ? null : json["full_name"],
+    email: json["email"] == null ? null : json["email"],
+    address: json["address"] == null ? null : json["address"],
+    area: json["area"] == null ? null : json["area"],
+    zip: json["zip"] == null ? null : json["zip"],
+    mobileNo: json["mobile_no"] == null ? null : json["mobile_no"],
+  );
 
+  Map<String, dynamic> toJson() => {
+    "address_id": addressId == null ? null : addressId,
+    "user_id": userId == null ? null : userId,
+    "state_name": stateName == null ? null : stateName,
+    "city_name": cityName == null ? null : cityName,
+    "full_name": fullName == null ? null : fullName,
+    "email": email == null ? null : email,
+    "address": address == null ? null : address,
+    "area": area == null ? null : area,
+    "zip": zip == null ? null : zip,
+    "mobile_no": mobileNo == null ? null : mobileNo,
+  };
+}
+
+class UserDetails {
+  UserDetails({
+    this.userId,
+    this.name,
+    this.email,
+    this.phone,
+    this.profileUrl,
+  });
+
+  String ?userId;
+  String ?name;
+  String ?email;
+  String ?phone;
+  String ?profileUrl;
+
+  factory UserDetails.fromJson(Map<String, dynamic> json) => UserDetails(
+    userId: json["user_id"] == null ? null : json["user_id"],
+    name: json["name"] == null ? null : json["name"],
+    email: json["email"] == null ? null : json["email"],
+    phone: json["phone"] == null ? null : json["phone"],
+    profileUrl: json["profile_url"] == null ? null : json["profile_url"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "user_id": userId == null ? null : userId,
+    "name": name == null ? null : name,
+    "email": email == null ? null : email,
+    "phone": phone == null ? null : phone,
+    "profile_url": profileUrl == null ? null : profileUrl,
+  };
+}
+
+class VendorDetails {
+  VendorDetails({
+    this.vendorId,
+    this.name,
+    this.shopName,
+    this.phone,
+    this.address,
+    this.state,
+    this.city,
+    this.zip,
+    this.image,
+  });
+
+  String ?vendorId;
+  String ?name;
+  String ?shopName;
+  String ?phone;
+  String ?address;
+  String ?state;
+  String ?city;
+  String ?zip;
+  String ?image;
+
+  factory VendorDetails.fromJson(Map<String, dynamic> json) => VendorDetails(
+    vendorId: json["vendor_id"] == null ? null : json["vendor_id"],
+    name: json["name"] == null ? null : json["name"],
+    shopName: json["shop_name"] == null ? null : json["shop_name"],
+    phone: json["phone"] == null ? null : json["phone"],
+    address: json["address"] == null ? null : json["address"],
+    state: json["state"] == null ? null : json["state"],
+    city: json["city"] == null ? null : json["city"],
+    zip: json["zip"] == null ? null : json["zip"],
+    image: json["image"] == null ? null : json["image"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "vendor_id": vendorId == null ? null : vendorId,
+    "name": name == null ? null : name,
+    "shop_name": shopName == null ? null : shopName,
+    "phone": phone == null ? null : phone,
+    "address": address == null ? null : address,
+    "state": state == null ? null : state,
+    "city": city == null ? null : city,
+    "zip": zip == null ? null : zip,
+    "image": image == null ? null : image,
+  };
 }
