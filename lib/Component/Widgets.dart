@@ -274,6 +274,8 @@ class CustomTextField extends StatelessWidget {
 
   final initialValue;
 
+  final label;
+
   const CustomTextField(
       {Key? key,
       this.visible,
@@ -290,7 +292,7 @@ class CustomTextField extends StatelessWidget {
       this.check,
       this.iconColor,
       this.enable,
-      this.initialValue})
+      this.initialValue, this.label})
       : super(key: key);
 
   @override
@@ -308,6 +310,7 @@ class CustomTextField extends StatelessWidget {
           controller: controller,
           obscureText: obscure ?? false,
           decoration: InputDecoration(
+            label: label,
             contentPadding: EdgeInsets.only(left: 10),
             suffixIcon: suffix ??
                 Padding(

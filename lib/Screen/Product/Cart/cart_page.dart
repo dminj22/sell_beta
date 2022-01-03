@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
+import 'package:sell_beta_customer/Api/model/cart_update_quantity_model.dart';
 import 'package:sell_beta_customer/Api/model/delete_cart_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Config/theme.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
+import 'package:sell_beta_customer/Screen/Product/create_order/create_order.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -163,8 +165,10 @@ class _CartPageState extends State<CartPage> {
           future: getCartList(user.userId),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
+              var data = snapshot.data.data;
               if (snapshot.data.status) {
                 if (itemNo.isEmpty) {
+
                   itemNo = snapshot.data.data
                       .map((e) => int.parse(e.quantity))
                       .toList();
@@ -197,6 +201,14 @@ class _CartPageState extends State<CartPage> {
                       trailing: SizedBox(
                         width: 100,
                         child: CustomButtons(
+                          onPressed: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateOrderPage()));
+                            try{
+                              // print(multiDelete);
+
+                              createOrder(user.userId, "85");
+                            }catch(e){}
+                          },
                           color: [
                             Color(0xffF15741),
                             Color(0xffF29F46)
@@ -365,13 +377,24 @@ class _CartPageState extends State<CartPage> {
                                                 ),
                                                 InkWell(
                                                     onTap: () {
-                                                      setState(() {
+                                                      setState(() async {
                                                         if (itemNo[index] >
                                                             1) {
                                                           itemNo[index] =
                                                               itemNo[index] -
                                                                   1;
                                                           newChange = true;
+                                                        }
+                                                        if(newChange){
+                                                          var cartId = "${data[index].cartId}";
+                                                          var quantity = "${itemNo[index]}";
+                                                          var newPrice = "${double.parse(item.productList.salePrice) * itemNo[index]}";
+                                                          CartUpdateQuantityModel? model = await updateCartQuantity(cartId, quantity, newPrice);
+                                                          if(model!.status == true){
+                                                            showToast("Updated");
+                                                          }else{
+
+                                                          }
                                                         }
                                                       });
                                                     },
@@ -380,14 +403,24 @@ class _CartPageState extends State<CartPage> {
                                                 Text(itemNo[index]
                                                     .toString()),
                                                 InkWell(
-                                                    onTap: () {
+                                                    onTap: () async {
                                                       setState(() {
                                                         itemNo[index] =
                                                             itemNo[index] +
                                                                 1;
                                                         newChange = true;
-                                                        print(itemNo);
                                                       });
+                                                      if(newChange){
+                                                        var cartId = "${data[index].cartId}";
+                                                        var quantity = "${itemNo[index]}";
+                                                        var newPrice = "${double.parse(item.productList.salePrice) * itemNo[index]}";
+                                                        CartUpdateQuantityModel? model = await updateCartQuantity(cartId, quantity, newPrice);
+                                                        if(model!.status == true){
+                                                          showToast("Updated");
+                                                        }else{
+
+                                                        }
+                                                      }
                                                     },
                                                     child: ImageIcon(
                                                       AssetImage(

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:sell_beta_customer/Api/base_url.dart';
 import 'package:sell_beta_customer/Api/model/add_to_cart_model.dart';
+import 'package:sell_beta_customer/Api/model/cart_update_quantity_model.dart';
 import 'package:sell_beta_customer/Api/model/customer_order_list_model.dart';
 import 'package:sell_beta_customer/Api/model/delete_cart_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_otp_verify_model.dart';
@@ -475,11 +476,12 @@ Future<GetCatSubCatModel?> getCatSubCat(id) async {
   }
 }
 
-Future<CustomerOrderListModel?> customerOrderList()async{
-  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/customerorder_list'));
-  request.fields.addAll({
-    'user_id': '1'
-  });
+Future<CustomerOrderListModel?> customerOrderList() async {
+  var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'https://bodyrecomp.app/app/project/ecom/api/customerorder_list'));
+  request.fields.addAll({'user_id': '1'});
 
   http.StreamedResponse response = await request.send();
 
@@ -487,20 +489,15 @@ Future<CustomerOrderListModel?> customerOrderList()async{
     final str = await response.stream.bytesToString();
     print(str);
     return CustomerOrderListModel.fromJson(json.decode(str));
-  }
-  else {
+  } else {
     return null;
   }
 }
 
-
-Future<CustomerOrderListModel?> singleOrderDetails()async{
-
-  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/singleorderview'));
-  request.fields.addAll({
-    'order_id': '2'
-  });
-
+Future<CustomerOrderListModel?> singleOrderDetails() async {
+  var request = http.MultipartRequest('POST',
+      Uri.parse('https://bodyrecomp.app/app/project/ecom/api/singleorderview'));
+  request.fields.addAll({'order_id': '2'});
 
   http.StreamedResponse response = await request.send();
 
@@ -508,9 +505,46 @@ Future<CustomerOrderListModel?> singleOrderDetails()async{
     final str = await response.stream.bytesToString();
     print(str);
     return CustomerOrderListModel.fromJson(json.decode(str));
+  } else {
+    return null;
+  }
+}
+
+Future<CartUpdateQuantityModel?> updateCartQuantity(
+    cartId, quantity, price) async {
+  var headers = {
+    'Cookie': 'ci_session=bd4ed895b2380157766dde4c5cf12014f3de47c7'
+  };
+  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/updatecartqunatity'));
+  request.fields.addAll({
+    'cart_id': '$cartId',
+    'quantity': '$quantity',
+    'price': '$price'
+  });
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return CartUpdateQuantityModel.fromJson(json.decode(str));
   }
   else {
     return null;
   }
 
+}
+
+Future createOrder(userId, cartId) async {
+  var request = http.Request('POST',
+      Uri.parse('https://bodyrecomp.app/app/project/ecom/api/create_order'));
+  request.body = json.encode({"userId": "$userId", "cart_id": "$cartId"});
+
+  http.StreamedResponse response = await request.send();
+  if (response.statusCode == 200) {
+    print(await response.stream.bytesToString());
+  } else {
+    print(response.reasonPhrase);
+  }
 }
