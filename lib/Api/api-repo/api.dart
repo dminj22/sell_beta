@@ -10,6 +10,7 @@ import 'package:sell_beta_customer/Api/model/cart_update_quantity_model.dart';
 import 'package:sell_beta_customer/Api/model/create_order_model.dart';
 import 'package:sell_beta_customer/Api/model/customer_order_list_model.dart';
 import 'package:sell_beta_customer/Api/model/delete_cart_model.dart';
+import 'package:sell_beta_customer/Api/model/follow_vendor_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_otp_verify_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_password_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_update_password_model.dart';
@@ -380,17 +381,17 @@ Future<AddToCartModel?> addToCart(
 }
 
 // get vendor details
-Future<VendorDetailModel?> getVendorDetails(userId) async {
+Future<VendorDetailsModel?> getVendorDetails(vendorId, userId) async {
   var request =
       http.MultipartRequest('POST', Uri.parse(_url.vendorShopDetails));
-  request.fields.addAll({'vendor_id': '$userId'});
+  request.fields.addAll({'vendor_id': '$vendorId', "user_id": "$userId"});
 
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
     _log.d(str);
-    return vendorDetailModelFromJson(str);
+    return vendorDetailsModelFromJson(str);
   } else {
     return null;
   }
@@ -500,10 +501,10 @@ Future<CustomerOrderListModel?> customerOrderList(userId) async {
   }
 }
 
-Future<CustomerOrderListModel?> singleOrderDetails() async {
+Future<CustomerOrderListModel?> singleOrderDetails(orderId) async {
   var request = http.MultipartRequest('POST',
       Uri.parse('https://bodyrecomp.app/app/project/ecom/api/singleorderview'));
-  request.fields.addAll({'order_id': '2'});
+  request.fields.addAll({'order_id': '$orderId'});
 
   http.StreamedResponse response = await request.send();
 
@@ -592,27 +593,27 @@ Future<StateListModel?> getStateList() async {
   }
 }
 
-
-Future<GetCityListModel?> getCityList(stateId)async{
-  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/getAllCity'));
-  request.fields.addAll({
-    'state_id': '$stateId'
-  });
+Future<GetCityListModel?> getCityList(stateId) async {
+  var request = http.MultipartRequest('POST',
+      Uri.parse('https://bodyrecomp.app/app/project/ecom/api/getAllCity'));
+  request.fields.addAll({'state_id': '$stateId'});
 
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
     return GetCityListModel.fromJson(json.decode(str));
-  }
-  else {
+  } else {
     return null;
   }
-
 }
 
-Future<AddAddressModel?> addAddress(userId ,  name , email , number , address , stateId , cityId , area , zip )async{
-  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/insert_user_address'));
+Future<AddAddressModel?> addAddress(
+    userId, name, email, number, address, stateId, cityId, area, zip) async {
+  var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'https://bodyrecomp.app/app/project/ecom/api/insert_user_address'));
   request.fields.addAll({
     'user_id': '$userId',
     'full_name': '$name',
@@ -627,13 +628,27 @@ Future<AddAddressModel?> addAddress(userId ,  name , email , number , address , 
   });
 
   http.StreamedResponse response = await request.send();
-print(request.fields);
+  print(request.fields);
   if (response.statusCode == 200) {
-    final str =await response.stream.bytesToString();
+    final str = await response.stream.bytesToString();
     return AddAddressModel.fromJson(json.decode(str));
-  }
-  else {
+  } else {
     return null;
   }
+}
 
+Future<FollowVendorModel?> followVendor(userId, vendorId, type) async {
+  var request = http.MultipartRequest('POST',
+      Uri.parse('https://bodyrecomp.app/app/project/ecom/api/follow_unfollow'));
+  request.fields.addAll(
+      {'user_id': '$userId', 'vendor_id': '$vendorId', 'type': '$type'});
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return FollowVendorModel.fromJson(json.decode(str));
+  } else {
+    return null;
+  }
 }

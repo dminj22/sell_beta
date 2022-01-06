@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
+import 'package:sell_beta_customer/Api/model/follow_vendor_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
+import 'package:sell_beta_customer/Provider/user_provider.dart';
 import 'package:sell_beta_customer/Screen/Product/view_one_product.dart';
 import 'package:sell_beta_customer/Screen/Vendor_store/vendor_follower_list.dart';
 
@@ -27,6 +30,7 @@ class _VendorProfileState extends State<VendorProfile> {
 
   @override
   Widget build(BuildContext context) {
+    var user = Provider.of<UserProvider>(context);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return DefaultTabController(
@@ -44,7 +48,7 @@ class _VendorProfileState extends State<VendorProfile> {
 
           body: FutureBuilder(
               future: Future.wait([
-                getVendorDetails(widget.vendorId),
+                getVendorDetails(widget.vendorId , user.userId),
                 getShopProduct(widget.vendorId),
               ]),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -192,8 +196,24 @@ class _VendorProfileState extends State<VendorProfile> {
                                             Colors.transparent),
                                         elevation:
                                         MaterialStateProperty.all(0)),
-                                    onPressed: () {},
-                                    child: Text("Follow"),
+                                    onPressed: () async {
+                                      var userId = "${user.userId}";
+                                      var vendorId = "${widget.vendorId}";
+                                      var type = vendor[0].follow == "false"?"Follow":"UnFollow";
+                                      FollowVendorModel? model = await followVendor(userId, vendorId, type);
+                                      if(model!.status == true){
+                                        setState(() {
+
+                                        });
+                                        showToast(model.message);
+                                      }else{
+                                        setState(() {
+
+                                        });
+                                        showToast(model.message);
+                                      }
+                                    },
+                                    child: Text(vendor[0].follow == "false"?"Follow":"UnFollow"),
                                   ),
                                 ),
                               ),

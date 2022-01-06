@@ -3,7 +3,8 @@ import 'package:sell_beta_customer/Api/api-repo/api.dart';
 import 'package:sell_beta_customer/Config/theme.dart';
 
 class ViewSingleOrderPage extends StatefulWidget {
-  const ViewSingleOrderPage({Key? key}) : super(key: key);
+  final orderId;
+  const ViewSingleOrderPage({Key? key, this.orderId}) : super(key: key);
 
   @override
   _ViewSingleOrderPageState createState() => _ViewSingleOrderPageState();
@@ -30,7 +31,7 @@ class _ViewSingleOrderPageState extends State<ViewSingleOrderPage> {
         actions: [],
       ),
       body: FutureBuilder(
-          future: singleOrderDetails(),
+          future: singleOrderDetails(widget.orderId),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               var data = snapshot.data.data;
@@ -50,7 +51,7 @@ class _ViewSingleOrderPageState extends State<ViewSingleOrderPage> {
                   ),
                   OrderTile(
                     title: "Customer Name",
-                    trailing: Text("${data[0].userDetails.name}"),
+                    trailing: Text("${data[0].userDetail.name}"),
                   ),
                   OrderTile(
                     title: "Payment Mode",
@@ -76,13 +77,13 @@ class _ViewSingleOrderPageState extends State<ViewSingleOrderPage> {
                                   image: DecorationImage(
                                       fit: BoxFit.contain,
                                       image: NetworkImage(
-                                          data[0].productList[0].image))),
+                                          data[0].productDetail.image))),
                             ),
                           ),
                           title:
-                              "${data[0].productList[0].title}".toUpperCase(),
+                              "${data[0].productDetail.title}".toUpperCase(),
                           subTitle: Text(
-                              "Price  ${data[0].productList[0].salePriceCurrency}${data[0].totalAmount}\nSize    S\nQty        ${data[0].noOfProduct}"),
+                              "Price  ${data[0].productDetail.salePriceCurrency}${data[0].cartDetail.price}\nSize    S\nQty        ${data[0].cartDetail.quantity}"),
                           trailing: Icon(Icons.arrow_forward_ios),
                         ),
                         SizedBox(
@@ -140,28 +141,28 @@ class _ViewSingleOrderPageState extends State<ViewSingleOrderPage> {
                         OrderTile(title: "Price BreakUp"),
                         OrderTile(
                           title: "Product Price",
-                          trailing: Text("${data[0].totalAmount}"),
+                          trailing: Text("${data[0].productDetail.salePriceCurrency} ${data[0].cartDetail.price}"),
                         ),
                         OrderTile(
                           title: "Shipping Charges",
-                          trailing: Text("${data[0].shippingCharge}"),
+                          trailing: Text("${data[0].productDetail.salePriceCurrency} 0"),
                         ),
                         OrderTile(
                           title: "COD Charges",
-                          trailing: Text("362"),
+                          trailing: Text("${data[0].productDetail.salePriceCurrency} 0"),
                         ),
                         OrderTile(
                           title: "1st Order Discount",
-                          trailing: Text("362"),
+                          trailing: Text("${data[0].productDetail.salePriceCurrency} 0"),
                         ),
                         Divider(),
                         OrderTile(
                           title: "Order Total",
-                          trailing: Text("${data[0].totalAmount}"),
+                          trailing: Text("${data[0].productDetail.salePriceCurrency} ${data[0].cartDetail.price}"),
                         ),
                         OrderTile(
                           title: "Final Price",
-                          trailing: Text("${data[0].totalAmount}"),
+                          trailing: Text("${data[0].productDetail.salePriceCurrency} ${data[0].cartDetail.price}"),
                         ),
                       ],
                     ),
@@ -172,7 +173,7 @@ class _ViewSingleOrderPageState extends State<ViewSingleOrderPage> {
                       child: OrderTile(
                         title: "Shipping Address",
                         subTitle: Text(
-                            "Customer Name : ${data[0].shippingAddress.fullName}\n${data[0].shippingAddress.address} , ${data[0].shippingAddress.area}, ${data[0].shippingAddress.cityName} , \n${data[0].shippingAddress.stateName} - ${data[0].shippingAddress.zip}\n${data[0].shippingAddress.email}   ,Phone No : ${data[0].shippingAddress.mobileNo}"),
+                            "Customer Name : ${data[0].shippingDetail.fullName}\n${data[0].shippingDetail.address} , ${data[0].shippingDetail.area}, ${data[0].shippingDetail.cityName} , \n${data[0].shippingDetail.stateName} - ${data[0].shippingDetail.zip}\n${data[0].shippingDetail.email}   ,Phone No : ${data[0].shippingDetail.mobileNo}"),
                       ),
                     ),
                   ),
@@ -181,14 +182,14 @@ class _ViewSingleOrderPageState extends State<ViewSingleOrderPage> {
                       children: [
                         OrderTile(
                           title: "Sender Name",
-                          trailing: Text("${data[0].vendorDetails.name}"),
+                          trailing: Text("${data[0].vendorDetail.name}"),
                         ),
                         OrderTile(
                           title: "Sender Number",
                           trailing:
-                              Text("Pincode : ${data[0].vendorDetails.zip}"),
+                              Text("Pincode : ${data[0].vendorDetail.zip}"),
                           subTitle: Text(
-                              "${data[0].vendorDetails.address},${data[0].vendorDetails.city},${data[0].vendorDetails.state}"),
+                              "${data[0].vendorDetail.address},${data[0].vendorDetail.city},${data[0].vendorDetail.state}"),
                         ),
                       ],
                     ),
@@ -198,7 +199,7 @@ class _ViewSingleOrderPageState extends State<ViewSingleOrderPage> {
             } else if (snapshot.hasError) {
               return Icon(Icons.error_outline);
             } else {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
           }),
     );

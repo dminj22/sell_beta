@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
 import 'package:sell_beta_customer/Api/model/add_to_cart_model.dart';
+import 'package:sell_beta_customer/Api/model/follow_vendor_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Component/bottom_sheet/delivery.dart';
 import 'package:sell_beta_customer/Component/bottom_sheet/service.dart';
@@ -133,7 +134,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
             getSingleProductImage(widget.productId),
             getShopProduct(widget.vendorId),
             getCartList(user.userId),
-            getVendorDetails(widget.vendorId),
+            getVendorDetails(widget.vendorId , user.userId),
             productReview(widget.productId),
             getRelatedProduct(widget.subCatId)
           ]),
@@ -843,8 +844,24 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                               BorderRadius
                                                                   .circular(
                                                                       10)),
-                                                      onPressed: () {},
-                                                      child: Text("Follow"),
+                                                      onPressed: () async {
+                                                        var userId = "${user.userId}";
+                                                        var vendorId = "${widget.vendorId}";
+                                                        var type = vendor[0].follow == "false"?"Follow":"UnFollow";
+                                                        FollowVendorModel? model = await followVendor(userId, vendorId, type);
+                                                        if(model!.status == true){
+                                                          setState(() {
+
+                                                          });
+                                                          showToast(model.message);
+                                                        }else{
+                                                          setState(() {
+
+                                                          });
+                                                          showToast(model.message);
+                                                        }
+                                                      },
+                                                      child: Text(vendor[0].follow == "false"?"Follow":"UnFollow"),
                                                     ),
                                                     OutlineButton(
                                                       shape: RoundedRectangleBorder(

@@ -15,8 +15,16 @@ class OrderListPage extends StatefulWidget {
 
 class _OrderListPageState extends State<OrderListPage> {
   var type = [
-    "All", "Ordered" , "Shipped" , "Delivered" , "Cancelled" , "Exchanged" , "Return" , "Others"
+    "All",
+    "Ordered",
+    "Shipped",
+    "Delivered",
+    "Cancelled",
+    "Exchanged",
+    "Return",
+    "Others"
   ];
+
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<UserProvider>(context);
@@ -37,14 +45,19 @@ class _OrderListPageState extends State<OrderListPage> {
       ),
       body: Column(
         children: [
-          ListTile(title: Text("Your Orders"),),
-          Wrap(children: type.map<Widget>((e) => InkWell(
-              onTap: (){},
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Chip(label: Text(e)),
-              ))).toList(),),
-
+          ListTile(
+            title: Text("Your Orders"),
+          ),
+          Wrap(
+            children: type
+                .map<Widget>((e) => InkWell(
+                    onTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Chip(label: Text(e)),
+                    )))
+                .toList(),
+          ),
           Expanded(
             child: FutureBuilder(
                 future: customerOrderList(user.userId),
@@ -66,45 +79,57 @@ class _OrderListPageState extends State<OrderListPage> {
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   elevation: 5,
-                                  child: ListTile(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ViewSingleOrderPage()));
-                                    },
-                                    // leading: Card(
-                                    //   elevation: 0,
-                                    //   color: Colors.transparent,
-                                    //   child: Container(
-                                    //     width: 60,
-                                    //     height: 100,
-                                    //     decoration: BoxDecoration(
-                                    //         borderRadius:
-                                    //             BorderRadius.all(Radius.circular(10)),
-                                    //         image: DecorationImage(
-                                    //             fit: BoxFit.cover,
-                                    //             image: NetworkImage(data[index]
-                                    //                 .productList[0]
-                                    //                 .image))),
-                                    //   ),
-                                    // ),
-                                    title:
-                                        Text("${data[index].productList[0].title}"),
-                                    trailing: Icon(Icons.arrow_forward_ios),
-                                    subtitle: Wrap(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(4),
-                                          child: CircleAvatar(
-                                            backgroundColor: Colors.green,
-                                            radius: 5,
-                                          ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ViewSingleOrderPage(orderId: data[index].orderId,)));
+                                      },
+                                      leading: Card(
+                                        elevation: 0,
+                                        color: Colors.transparent,
+                                        child: Container(
+                                          width: 60,
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10)),
+                                              image: DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  image: data[index]
+                                                              .productDetail
+                                                              .image !=
+                                                          ""
+                                                      ? NetworkImage(data[index]
+                                                          .productDetail
+                                                          .image)
+                                                      : NetworkImage(
+                                                          "https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg"))),
                                         ),
-                                        Text(
-                                            "Order on : ${date.day}-${date.month}-${date.year}\nPayment Type : ${data[index].paymentMethod}" , style: GoogleFonts.inter(fontSize: 10),),
-                                      ],
+                                      ),
+                                      title: Text(
+                                          "${data[index].productDetail.title}"),
+                                      trailing: Icon(Icons.arrow_forward_ios),
+                                      subtitle: Wrap(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(4),
+                                            child: CircleAvatar(
+                                              backgroundColor: Colors.green,
+                                              radius: 5,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Order on : ${date.day}-${date.month}-${date.year}\nPayment Type : ${data[index].paymentMethod}\nBrands : ${data[index].productDetail.brandName}",
+                                            style:
+                                                GoogleFonts.inter(fontSize: 10),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
