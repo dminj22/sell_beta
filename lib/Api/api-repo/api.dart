@@ -4,18 +4,22 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:sell_beta_customer/Api/base_url.dart';
+import 'package:sell_beta_customer/Api/model/add_address_model.dart';
 import 'package:sell_beta_customer/Api/model/add_to_cart_model.dart';
 import 'package:sell_beta_customer/Api/model/cart_update_quantity_model.dart';
+import 'package:sell_beta_customer/Api/model/create_order_model.dart';
 import 'package:sell_beta_customer/Api/model/customer_order_list_model.dart';
 import 'package:sell_beta_customer/Api/model/delete_cart_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_otp_verify_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_password_model.dart';
 import 'package:sell_beta_customer/Api/model/forget_update_password_model.dart';
+import 'package:sell_beta_customer/Api/model/get_address_list_model.dart';
 import 'package:sell_beta_customer/Api/model/get_all_notification_model.dart';
 import 'package:sell_beta_customer/Api/model/get_all_product_by_sub_cat_id.dart';
 import 'package:sell_beta_customer/Api/model/get_cart_list_model.dart';
 import 'package:sell_beta_customer/Api/model/get_cat_sub_cat_model.dart';
 import 'package:sell_beta_customer/Api/model/get_category_model.dart';
+import 'package:sell_beta_customer/Api/model/get_city_list_model.dart';
 import 'package:sell_beta_customer/Api/model/get_follower_model.dart';
 import 'package:sell_beta_customer/Api/model/get_product_by_sub_id_model.dart';
 import 'package:sell_beta_customer/Api/model/get_sub_category_model.dart';
@@ -25,10 +29,12 @@ import 'package:sell_beta_customer/Api/model/product_review_model.dart';
 import 'package:sell_beta_customer/Api/model/shop_product_model.dart';
 import 'package:sell_beta_customer/Api/model/single_product_images_model.dart';
 import 'package:sell_beta_customer/Api/model/single_product_view_model.dart';
+import 'package:sell_beta_customer/Api/model/state_list_model.dart';
 import 'package:sell_beta_customer/Api/model/universal_model.dart';
 import 'package:sell_beta_customer/Api/model/update_profile_model.dart';
 import 'package:sell_beta_customer/Api/model/user_details_model.dart';
 import 'package:sell_beta_customer/Api/model/vendor_details_model.dart';
+import 'package:sell_beta_customer/Screen/Product/create_order/create_order.dart';
 
 Url _url = Url();
 Logger _log = Logger();
@@ -476,15 +482,15 @@ Future<GetCatSubCatModel?> getCatSubCat(id) async {
   }
 }
 
-Future<CustomerOrderListModel?> customerOrderList() async {
+Future<CustomerOrderListModel?> customerOrderList(userId) async {
   var request = http.MultipartRequest(
       'POST',
       Uri.parse(
           'https://bodyrecomp.app/app/project/ecom/api/customerorder_list'));
-  request.fields.addAll({'user_id': '1'});
+  request.fields.addAll({'user_id': '$userId'});
 
   http.StreamedResponse response = await request.send();
-
+  print(request);
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
     print(str);
@@ -515,12 +521,12 @@ Future<CartUpdateQuantityModel?> updateCartQuantity(
   var headers = {
     'Cookie': 'ci_session=bd4ed895b2380157766dde4c5cf12014f3de47c7'
   };
-  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/updatecartqunatity'));
-  request.fields.addAll({
-    'cart_id': '$cartId',
-    'quantity': '$quantity',
-    'price': '$price'
-  });
+  var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'https://bodyrecomp.app/app/project/ecom/api/updatecartqunatity'));
+  request.fields.addAll(
+      {'cart_id': '$cartId', 'quantity': '$quantity', 'price': '$price'});
 
   request.headers.addAll(headers);
 
@@ -529,6 +535,75 @@ Future<CartUpdateQuantityModel?> updateCartQuantity(
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
     return CartUpdateQuantityModel.fromJson(json.decode(str));
+  } else {
+    return null;
+  }
+}
+
+Future<CreateOrderModel?> createOrder(details) async {
+  var request = http.MultipartRequest('POST',
+      Uri.parse('https://bodyrecomp.app/app/project/ecom/api/create_order'));
+  request.fields.addAll(details);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return CreateOrderModel.fromJson(json.decode(str));
+  } else {
+    return null;
+  }
+}
+
+Future<GetAddressListModel?> getAddressList(userId) async {
+  var headers = {
+    'Cookie': 'ci_session=f4a1535d17e12396c512061cd095046c963c1ee3'
+  };
+  var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'https://bodyrecomp.app/app/project/ecom/api/getUserShippingAddressList'));
+  request.fields.addAll({'user_id': '$userId'});
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return GetAddressListModel.fromJson(json.decode(str));
+  } else {
+    return null;
+  }
+}
+
+Future<StateListModel?> getStateList() async {
+  var request = http.MultipartRequest('POST',
+      Uri.parse('https://bodyrecomp.app/app/project/ecom/api/getAllState'));
+  request.fields.addAll({'country_id': '1'});
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return StateListModel.fromJson(json.decode(str));
+  } else {
+    return null;
+  }
+}
+
+
+Future<GetCityListModel?> getCityList(stateId)async{
+  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/getAllCity'));
+  request.fields.addAll({
+    'state_id': '$stateId'
+  });
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return GetCityListModel.fromJson(json.decode(str));
   }
   else {
     return null;
@@ -536,15 +611,29 @@ Future<CartUpdateQuantityModel?> updateCartQuantity(
 
 }
 
-Future createOrder(userId, cartId) async {
-  var request = http.Request('POST',
-      Uri.parse('https://bodyrecomp.app/app/project/ecom/api/create_order'));
-  request.body = json.encode({"userId": "$userId", "cart_id": "$cartId"});
+Future<AddAddressModel?> addAddress(userId ,  name , email , number , address , stateId , cityId , area , zip )async{
+  var request = http.MultipartRequest('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/insert_user_address'));
+  request.fields.addAll({
+    'user_id': '$userId',
+    'full_name': '$name',
+    'email': '$email',
+    'mobile_no': '$number',
+    'address': '$address',
+    'country_id': '1',
+    'state_id': '$stateId',
+    'city_id': '$cityId',
+    'area': '$area',
+    'zip': '$zip'
+  });
 
   http.StreamedResponse response = await request.send();
+print(request.fields);
   if (response.statusCode == 200) {
-    print(await response.stream.bytesToString());
-  } else {
-    print(response.reasonPhrase);
+    final str =await response.stream.bytesToString();
+    return AddAddressModel.fromJson(json.decode(str));
   }
+  else {
+    return null;
+  }
+
 }

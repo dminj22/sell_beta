@@ -190,7 +190,8 @@ class _CartPageState extends State<CartPage> {
               }
 
               return Scaffold(
-                bottomSheet: Padding(
+                bottomSheet: snapshot.data.status && snapshot.data.data.isNotEmpty?
+                Padding(
                   padding:
                   const EdgeInsets.symmetric(horizontal: 19),
                   child: Card(
@@ -202,12 +203,13 @@ class _CartPageState extends State<CartPage> {
                         width: 100,
                         child: CustomButtons(
                           onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateOrderPage()));
-                            try{
-                              // print(multiDelete);
+                            if(multiDelete.isNotEmpty){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateOrderPage(createOrderData: multiDelete,)));
+                            }else{
+                              showToast("Select Product");
+                            }
 
-                              createOrder(user.userId, "85");
-                            }catch(e){}
+
                           },
                           color: [
                             Color(0xffF15741),
@@ -218,10 +220,11 @@ class _CartPageState extends State<CartPage> {
                       ),
                     ),
                   ),
-                ),
+                ):Text(""),
                 body: ListView(
                   children: [
-                    snapshot.data.status
+
+                    snapshot.data.status && snapshot.data.data.isNotEmpty
                         ? Column(
                       children: [
                         ListView.builder(
@@ -449,7 +452,7 @@ class _CartPageState extends State<CartPage> {
             } else if (snapshot.hasError) {
               return Icon(Icons.error_outline);
             } else {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
           })
     );
