@@ -15,7 +15,7 @@ class GetCartListModel {
     this.data,
   });
 
-  dynamic status;
+  bool ?status;
   String? message;
   List<Datum>? data;
 
@@ -48,18 +48,18 @@ class Datum {
     this.productList,
   });
 
-  String? cartId;
-  String? userId;
-  String? username;
-  String? userPrfileImg;
-  String? vendorShopName;
-  String? vendorShopLogo;
-  String? productId;
-  String? quantity;
-  String? size;
-  String? color;
-  DateTime? addedOn;
-  ProductList? productList;
+  String ?cartId;
+  String ?userId;
+  String ?username;
+  String ?userPrfileImg;
+  String ?vendorShopName;
+  String ?vendorShopLogo;
+  String ?productId;
+  String ?quantity;
+  String ?size;
+  String ?color;
+  DateTime ?addedOn;
+  ProductList ?productList;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     cartId: json["cart_id"] == null ? null : json["cart_id"],
@@ -97,6 +97,7 @@ class ProductList {
     this.productId,
     this.sku,
     this.title,
+    this.brandName,
     this.description,
     this.salePrice,
     this.salePriceCurrency,
@@ -106,6 +107,7 @@ class ProductList {
   String? productId;
   String? sku;
   String? title;
+  String? brandName;
   String? description;
   String? salePrice;
   String? salePriceCurrency;
@@ -115,6 +117,7 @@ class ProductList {
     productId: json["product_id"] == null ? null : json["product_id"],
     sku: json["sku"] == null ? null : json["sku"],
     title: json["title"] == null ? null : json["title"],
+    brandName: json["brand_name"] == null ? null : json["brand_name"],
     description: json["description"] == null ? null : json["description"],
     salePrice: json["sale_price"] == null ? null : json["sale_price"],
     salePriceCurrency: json["sale_price_currency"] == null ? null : json["sale_price_currency"],
@@ -125,6 +128,7 @@ class ProductList {
     "product_id": productId == null ? null : productId,
     "sku": sku == null ? null : sku,
     "title": title == null ? null : title,
+    "brand_name": brandName == null ? null : brandName,
     "description": description == null ? null : description,
     "sale_price": salePrice == null ? null : salePrice,
     "sale_price_currency": salePriceCurrency == null ? null : salePriceCurrency,

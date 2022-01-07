@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
@@ -10,6 +11,7 @@ import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Config/theme.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
 import 'package:sell_beta_customer/Screen/Product/create_order/create_order.dart';
+import 'package:sell_beta_customer/Screen/Product/view_one_product.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -222,6 +224,8 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ):Text(""),
                 body: ListView(
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
                   children: [
 
                     snapshot.data.status && snapshot.data.data.isNotEmpty
@@ -347,7 +351,7 @@ class _CartPageState extends State<CartPage> {
                                                   FontWeight.w600),
                                             ),
                                             subtitle: Text(
-                                              "Size - ${item.size}",
+                                              "Size - ${item.size} Brands:${item.productList.brandName}",
                                               style: GoogleFonts.inter(
                                                   fontSize: 12,
                                                   fontWeight:
@@ -465,11 +469,15 @@ class NoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    var font1 = GoogleFonts.inter(fontWeight: FontWeight.bold);
+    var font2 = GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 10);
+
+    var user = Provider.of<UserProvider>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
         color: Colors.white,
-        height: height * .3,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -489,7 +497,214 @@ class NoItem extends StatelessWidget {
                 child: Text(
                   "View my History",
                   style: TextStyle(color: Colors.black),
-                ))
+                )),
+            FutureBuilder(
+                future: getShopProduct(4),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    var pro = snapshot.data.data;
+                    return snapshot.data.status
+                        ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5),
+                      child: Card(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                child: GridView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                    ClampingScrollPhysics(),
+                                    gridDelegate:
+                                    const SliverGridDelegateWithMaxCrossAxisExtent(
+                                        maxCrossAxisExtent: 200,
+                                        childAspectRatio:
+                                        1.3 / 2,
+                                        crossAxisSpacing: 13,
+                                        mainAxisSpacing: 16),
+                                    itemCount: pro.length >= 5
+                                        ? 4
+                                        : pro.length,
+                                    itemBuilder:
+                                        (BuildContext ctx, index) {
+                                      var prod = pro[index];
+
+                                      // bool wishlist = prod.wishlist.toLowerCase() == 'true';
+
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ViewSingleProductPage(
+                                                        productId: prod
+                                                            .productId,
+                                                        vendorId: prod
+                                                            .vendorId,
+                                                        subCatId: prod.subCategory,
+                                                      )));
+                                        },
+                                        child: Container(
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: height * .2,
+                                                width:
+                                                double.infinity,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(
+                                                        topLeft: Radius
+                                                            .circular(
+                                                            10),
+                                                        topRight: Radius
+                                                            .circular(
+                                                            10)),
+                                                    image: DecorationImage(
+                                                        fit: BoxFit
+                                                            .cover,
+                                                        image: NetworkImage(
+                                                            prod.imgUrl))),
+                                              ),
+                                              ListTile(
+                                                dense: true,
+                                                title: Text(
+                                                  prod.title
+                                                      .toString()
+                                                      .toUpperCase(),
+                                                  style: GoogleFonts.inter(
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .w600,
+                                                      fontSize: 13),
+                                                  maxLines: 2,
+                                                ),
+                                                subtitle: Text(
+                                                  prod.tag
+                                                      .toString()
+                                                      .toUpperCase(),
+                                                  style: GoogleFonts.inter(
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .w500,
+                                                      fontSize: 11),
+                                                  maxLines: 1,
+                                                ),
+                                                // trailing:wishlist?Icon(Icons.favorite , color: Color(0xffEA5524),) :Icon(Icons.favorite_border),
+                                              ),
+                                              Expanded(
+                                                child: Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: width *
+                                                          .05,
+                                                    ),
+                                                    Text(
+                                                      "${prod.purchasePriceCurrency} ${prod.salePrice}",
+                                                      style: GoogleFonts.inter(
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w500,
+                                                          color: Color(
+                                                              0xffEA5524),
+                                                          fontSize:
+                                                          13),
+                                                    ),
+                                                    Text(
+                                                      "    ${prod.discount}% OFF",
+                                                      style: GoogleFonts.inter(
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w500,
+                                                          color: Color(
+                                                              0xff0F9D58),
+                                                          fontSize:
+                                                          9),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment
+                                                      .center,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(
+                                                          width:
+                                                          width *
+                                                              .05,
+                                                        ),
+                                                        Image.asset(
+                                                            "images/icon/rating.png"),
+                                                        SizedBox(
+                                                          width:
+                                                          width *
+                                                              .01,
+                                                        ),
+                                                        Text(
+                                                          prod.ratingTotal,
+                                                          style: GoogleFonts.inter(
+                                                              fontSize:
+                                                              8),
+                                                        ),
+                                                        SizedBox(
+                                                          width:
+                                                          width *
+                                                              .01,
+                                                        ),
+                                                        Text(
+                                                          "(261) - 3.9k Sold",
+                                                          style: GoogleFonts.inter(
+                                                              fontSize:
+                                                              8),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Icon(
+                                                      Icons
+                                                          .more_vert,
+                                                      size: 12,
+                                                    ),
+                                                    SizedBox(
+                                                      width: width *
+                                                          .03,
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  10)),
+                                        ),
+                                      );
+                                    }),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                        : Container();
+                  } else if (snapshot.hasError) {
+                    return Icon(Icons.error_outline);
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                })
           ],
         ),
       ),
