@@ -26,6 +26,7 @@ import 'package:sell_beta_customer/Api/model/get_product_by_sub_id_model.dart';
 import 'package:sell_beta_customer/Api/model/get_sub_category_model.dart';
 import 'package:sell_beta_customer/Api/model/login_model.dart';
 import 'package:sell_beta_customer/Api/model/otp_verify_model.dart';
+import 'package:sell_beta_customer/Api/model/payment_initiate_model.dart';
 import 'package:sell_beta_customer/Api/model/product_review_model.dart';
 import 'package:sell_beta_customer/Api/model/shop_product_model.dart';
 import 'package:sell_beta_customer/Api/model/single_product_images_model.dart';
@@ -38,17 +39,17 @@ import 'package:sell_beta_customer/Api/model/vendor_details_model.dart';
 import 'package:sell_beta_customer/Screen/Product/create_order/create_order.dart';
 
 Url _url = Url();
-Logger _log = Logger();
+
 //User Sign Up
 Future<UniversalModel?> signUp(username, email, password) async {
   var request = http.MultipartRequest('POST', Uri.parse(_url.signUp));
   request.fields.addAll(
       {'username': '$username', 'email': '$email', 'password': '$password'});
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return universalModelFromJson(str);
   } else {
     return null;
@@ -61,10 +62,10 @@ Future<LoginModel?> login(email, password) async {
   request.fields.addAll({'email': '$email', 'password': '$password'});
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return loginModelFromJson(str);
   } else {
     return null;
@@ -78,10 +79,10 @@ Future<UserDetailsModel?> userDetails(userId) async {
   request.fields.addAll({'user_id': '$userId'});
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return userDetailsModelFromJson(str);
   } else {
     return null;
@@ -94,13 +95,13 @@ Future<ForgetPasswordModel?> forgetPassword(email) async {
 
   request.fields.addAll({'email': "$email"});
 
-  _log.d("$request || ${request.fields}");
+
 
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return forgetPasswordModelFromJson(str);
   } else {
     return null;
@@ -113,10 +114,10 @@ Future<OtpVerifyModel?> otpVerify(email, otp) async {
   request.fields.addAll({'email': '$email', 'otp': '$otp'});
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return otpVerifyModelFromJson(str);
   } else {
     return null;
@@ -130,10 +131,10 @@ Future<ForgetOtpVerifyModel?> forgotOtpVerify(email, otp) async {
   request.fields.addAll({'email': '$email', 'otp': '$otp'});
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return forgetOtpVerifyModelFromJson(str);
   } else {
     return null;
@@ -145,12 +146,12 @@ Future<ForgetUpdatePasswordModel?> forgetUpdatePassword(email, password) async {
   var request =
       http.MultipartRequest('POST', Uri.parse(_url.forgetUpdatePassword));
   request.fields.addAll({'email': '$email', 'update_password': '$password'});
-  _log.d("$request || ${request.fields}");
+
   http.StreamedResponse response = await request.send();
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return forgetUpdatePasswordModelFromJson(str);
   } else {
     return null;
@@ -174,10 +175,10 @@ Future<UpdateProfileModel?> updateProfile(
   });
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return updateProfileModelFromJson(str);
   } else {
     return null;
@@ -203,10 +204,10 @@ Future<UpdateProfileModel?> uploadProfilePic(
       .add(await http.MultipartFile.fromPath('profile_photo', '$image'));
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return updateProfileModelFromJson(str);
   } else {
     return null;
@@ -218,10 +219,10 @@ Future<GetCategoryModel?> getCategories() async {
   var request = http.MultipartRequest('POST', Uri.parse(_url.getAllCategory));
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return getCategoryModelFromJson(str);
   } else {
     return null;
@@ -235,10 +236,10 @@ Future<GetSubCategoryModel?> getSubCategory(catId) async {
   request.fields.addAll({'category_id': '$catId'});
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return getSubCategoryModelFromJson(str);
   } else {
     return null;
@@ -251,10 +252,10 @@ Future<GetAllNotificationModel?> getNotification() async {
       http.MultipartRequest('POST', Uri.parse(_url.getAllNotifications));
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return getAllNotificationModelFromJson(str);
   } else {
     return null;
@@ -270,10 +271,10 @@ Future<GetProductBySubIdModel?> getAllProductBySubId(id) async {
   });
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return getProductBySubIdModelFromJson(str);
   } else {
     return null;
@@ -288,16 +289,15 @@ Future<SingleProductViewModel?> getSingleProduct(id, userId) async {
     request.fields.addAll({'product_id': id, "user_id": userId});
 
     http.StreamedResponse response = await request.send();
-    _log.d("$request || ${request.fields}");
+
     if (response.statusCode == 200) {
       final str = await response.stream.bytesToString();
-      _log.d(str);
+
       return SingleProductViewModel.fromJson(json.decode(str));
     } else {
       return null;
     }
   } catch (e) {
-    print(e);
   }
 }
 
@@ -309,16 +309,15 @@ Future<SingleViewProductImageModel?> getSingleProductImage(id) async {
     request.fields.addAll({'product_id': id});
 
     http.StreamedResponse response = await request.send();
-    _log.d("$request || ${request.fields}");
+
     if (response.statusCode == 200) {
       final str = await response.stream.bytesToString();
-      _log.d(str);
+
       return singleViewProductImageModelFromJson(str);
     } else {
       return null;
     }
   } catch (e) {
-    print(e);
   }
 }
 
@@ -332,7 +331,7 @@ Future<ShopProductModel?> getShopProduct(id) async {
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.d(str);
+
     return shopProductModelFromJson(str);
   } else {
     return null;
@@ -348,7 +347,7 @@ Future<GetCartListModel?> getCartList(userId) async {
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.d(str);
+
     return getCartListModelFromJson(str);
   } else {
     return null;
@@ -370,13 +369,12 @@ Future<AddToCartModel?> addToCart(
   });
 
   http.StreamedResponse response = await request.send();
-  _log.d("$request || ${request.fields}");
+
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.e(str);
+
     return addToCartModelFromJson(str);
   } else {
-    print(response.reasonPhrase);
   }
 }
 
@@ -390,7 +388,7 @@ Future<VendorDetailsModel?> getVendorDetails(vendorId, userId) async {
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    _log.d(str);
+
     return vendorDetailsModelFromJson(str);
   } else {
     return null;
@@ -436,16 +434,13 @@ Future<DeleteCartModel?> deleteCartItem(cartId) async {
     request.fields.addAll(cartId);
 
     http.StreamedResponse response = await request.send();
-    print(request.fields);
     if (response.statusCode == 200) {
       final str = await response.stream.bytesToString();
-      print(str);
       return DeleteCartModel.fromJson(json.decode(str));
     } else {
       return null;
     }
   } catch (e) {
-    print(e);
   }
 }
 
@@ -491,10 +486,8 @@ Future<CustomerOrderListModel?> customerOrderList(userId) async {
   request.fields.addAll({'user_id': '$userId'});
 
   http.StreamedResponse response = await request.send();
-  print(request);
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    print(str);
     return CustomerOrderListModel.fromJson(json.decode(str));
   } else {
     return null;
@@ -510,7 +503,6 @@ Future<CustomerOrderListModel?> singleOrderDetails(orderId) async {
 
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
-    print(str);
     return CustomerOrderListModel.fromJson(json.decode(str));
   } else {
     return null;
@@ -628,7 +620,6 @@ Future<AddAddressModel?> addAddress(
   });
 
   http.StreamedResponse response = await request.send();
-  print(request.fields);
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
     return AddAddressModel.fromJson(json.decode(str));
@@ -648,6 +639,26 @@ Future<FollowVendorModel?> followVendor(userId, vendorId, type) async {
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
     return FollowVendorModel.fromJson(json.decode(str));
+  } else {
+    return null;
+  }
+}
+
+
+
+Future<PaymentInitiateModel?> paymentInitiate(email, amount, userId) async {
+  var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'https://bodyrecomp.app/app/project/ecom/api/payment_intrigration'));
+  request.fields
+      .addAll({'email': '$email', 'amount': '$amount', 'user_id': '$userId'});
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return PaymentInitiateModel.fromJson(json.decode(str));
   } else {
     return null;
   }

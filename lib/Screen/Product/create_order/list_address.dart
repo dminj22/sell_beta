@@ -6,7 +6,8 @@ import 'package:sell_beta_customer/Screen/Product/create_order/create_order.dart
 
 class AddressList extends StatefulWidget {
   final createOrderData;
-  const AddressList({Key? key, this.createOrderData}) : super(key: key);
+  final price;
+  const AddressList({Key? key, this.createOrderData, this.price}) : super(key: key);
 
   @override
   _AddressListState createState() => _AddressListState();
@@ -19,6 +20,15 @@ class _AddressListState extends State<AddressList> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Address"),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: <Color>[
+                    Color(0xffEA5524),
+                    Color(0xffF7941D),
+                  ])),),
       ),
       body: FutureBuilder(
           future: getAddressList(user.userId),
@@ -37,6 +47,7 @@ class _AddressListState extends State<AddressList> {
                                   MaterialPageRoute(
                                       builder: (context) => CreateOrderPage(
                                           addressId: data.addressId,createOrderData: widget.createOrderData,
+                                          price: widget.price,
                                           page: 1)));
                             },
                             dense: true,

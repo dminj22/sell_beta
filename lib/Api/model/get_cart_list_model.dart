@@ -15,7 +15,7 @@ class GetCartListModel {
     this.data,
   });
 
-  bool ?status;
+  bool? status;
   String? message;
   List<Datum>? data;
 
@@ -42,24 +42,26 @@ class Datum {
     this.vendorShopLogo,
     this.productId,
     this.quantity,
+    this.price,
     this.size,
     this.color,
     this.addedOn,
     this.productList,
   });
 
-  String ?cartId;
-  String ?userId;
-  String ?username;
-  String ?userPrfileImg;
-  String ?vendorShopName;
-  String ?vendorShopLogo;
-  String ?productId;
-  String ?quantity;
-  String ?size;
-  String ?color;
-  DateTime ?addedOn;
-  ProductList ?productList;
+  String? cartId;
+  String? userId;
+  String? username;
+  String? userPrfileImg;
+  String? vendorShopName;
+  String? vendorShopLogo;
+  String? productId;
+  String? quantity;
+  String? price;
+  String? size;
+  String? color;
+  DateTime? addedOn;
+  ProductList? productList;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     cartId: json["cart_id"] == null ? null : json["cart_id"],
@@ -70,6 +72,7 @@ class Datum {
     vendorShopLogo: json["vendor_shop_logo"] == null ? null : json["vendor_shop_logo"],
     productId: json["product_id"] == null ? null : json["product_id"],
     quantity: json["quantity"] == null ? null : json["quantity"],
+    price: json["price"] == null ? null : json["price"],
     size: json["size"] == null ? null : json["size"],
     color: json["color"] == null ? null : json["color"],
     addedOn: json["added_on"] == null ? null : DateTime.parse(json["added_on"]),
@@ -85,6 +88,7 @@ class Datum {
     "vendor_shop_logo": vendorShopLogo == null ? null : vendorShopLogo,
     "product_id": productId == null ? null : productId,
     "quantity": quantity == null ? null : quantity,
+    "price": price == null ? null : price,
     "size": size == null ? null : size,
     "color": color == null ? null : color,
     "added_on": addedOn == null ? null : addedOn!.toIso8601String(),

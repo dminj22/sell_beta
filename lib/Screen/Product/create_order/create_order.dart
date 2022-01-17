@@ -1,23 +1,24 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/shims/dart_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
 import 'package:sell_beta_customer/Api/model/add_address_model.dart';
 import 'package:sell_beta_customer/Api/model/create_order_model.dart';
+import 'package:sell_beta_customer/Api/model/payment_initiate_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
 import 'package:sell_beta_customer/Screen/Orders/order_list.dart';
 import 'package:sell_beta_customer/Screen/Product/create_order/list_address.dart';
-import 'package:sell_beta_customer/Screen/Profile/profile_edit.dart';
+import 'package:flutter_paystack/flutter_paystack.dart';
 
 class CreateOrderPage extends StatefulWidget {
   final createOrderData;
   final addressId;
   final page;
+  final price;
 
   const CreateOrderPage(
-      {Key? key, this.addressId, this.page, this.createOrderData})
+      {Key? key, this.addressId, this.page, this.createOrderData, this.price})
       : super(key: key);
 
   @override
@@ -25,6 +26,9 @@ class CreateOrderPage extends StatefulWidget {
 }
 
 class _CreateOrderPageState extends State<CreateOrderPage> {
+  var publicKey = 'pk_test_8ae701726ab13cd5e2423f4ba91ee23b984f0b98';
+  final plugin = PaystackPlugin();
+  CreateOrderModel _model = CreateOrderModel();
   var paymentType;
   var index = 0;
 
@@ -41,11 +45,56 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
 
   int? addressId;
 
+  onlinePayment(user) async {
+    print(widget.price.runtimeType);
+    showToast("Payment Initialise");
+    PaymentInitiateModel? model =
+        await paymentInitiate("dminj@gmail.com", "${widget.price}", "44");
+    if (model!.status == true) {
+      dynamic lastCharge = widget.price;
+      var i =  lastCharge.toInt();
+      print(i.runtimeType);
+      Charge charge = Charge()
+        ..amount = i*100
+        ..reference = "${model.data!.reference}"
+        ..accessCode = "${model.data!.accessCode}"
+        // or ..accessCode = _getAccessCodeFrmInitialization()
+        ..email = 'demo@email.com';
+      CheckoutResponse response = await plugin.checkout(
+        context,
+        method: CheckoutMethod.card,
+        // Defaults to CheckoutMethod.selectable
+        charge: charge,
+      );
+      if (response.status) {
+        showToast("Verify Payment");
+        widget.createOrderData.addAll({
+          'user_id': '$user',
+          'address_id': '${widget.addressId ?? addressId}',
+          'payment_status': 'paid',
+          'payment_method': '$paymentType'
+        });
+        print(widget.createOrderData);
+        CreateOrderModel? model = await createOrder(widget.createOrderData);
+        if (model!.status == true) {
+          setState(() {
+            _model = model;
+            index = 2;
+          });
+          showToast(model.message);
+        } else {
+          showToast(model.message);
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     index = widget.page ?? 0;
+    plugin.initialize(publicKey: publicKey);
   }
 
   @override
@@ -81,7 +130,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                         ? Expanded(
                             child: CustomButtons(
                               onPressed: () async {
-                                if (paymentType != null) {
+                                if (paymentType == "COD") {
                                   widget.createOrderData.addAll({
                                     'user_id': '${user.userId}',
                                     'address_id':
@@ -94,6 +143,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                       await createOrder(widget.createOrderData);
                                   if (model!.status == true) {
                                     setState(() {
+                                      _model = model;
                                       index = 2;
                                     });
                                     showToast(model.message);
@@ -101,7 +151,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     showToast(model.message);
                                   }
                                 } else {
-                                  showToast("Choose Payment Type");
+                                  onlinePayment(user.userId.toString());
                                 }
                               },
                               color: [Color(0xffF15741), Color(0xffF29F46)],
@@ -286,6 +336,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           MaterialPageRoute(
                               builder: (context) => AddressList(
                                     createOrderData: widget.createOrderData,
+                                price: widget.price,
                                   )));
                     },
                     child: Text("Select Address"),
@@ -332,7 +383,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           } else {
                             showToast(model.message);
                           }
-                        }else{
+                        } else {
                           showToast("Fill All Details");
                         }
                       } catch (e) {
@@ -367,13 +418,93 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                             }),
                         title: Text("COD"),
                       ),
+                    ),
+                    Card(
+                      child: ListTile(
+                        trailing: Radio(
+                            value: "Online",
+                            groupValue: paymentType,
+                            onChanged: (value) {
+                              setState(() {
+                                print(value);
+                                paymentType = value;
+                              });
+                            }),
+                        title: Text("Online"),
+                      ),
                     )
                   ],
                 )),
             Step(
                 title: Text("Summary"),
                 content: Column(
-                  children: [Text("Order Completed")],
+                  children: [
+                    Text("Order Placed"),
+                  _model.status == true?
+                  Column(children: [
+                    Divider(),
+                    ListTile(
+                      dense: true,
+                      leading: Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                      ),
+                      title: Text("Thank You for shopping with us"),
+                      subtitle:
+                      Text("Order Code : ${_model.data![0].orderCode}"),
+                    ),
+                    Divider(),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      itemCount: _model.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        var data = _model.data![index];
+                        return Column(
+                          children: [
+                            ListTile(
+                              dense: true,
+                              leading: Image.network(
+                                  data.productDetail!.image ?? ""),
+                              title: Text(
+                                  "${data.productDetail!.title} \nBrand Name : ${data.productDetail!.brandName}"),
+                              subtitle: Text(""
+                                  "QTY : ${data.cartDetail!.quantity} , "
+                                  "Size : ${data.cartDetail!.size} ,"
+                                  " Color : ${data.cartDetail!.color}\n"
+                                  "${data.productDetail!.salePriceCurrency} ${data.cartDetail!.price}"),
+                            ),
+                            Divider(),
+                          ],
+                        );
+                      },
+                    ),
+                    ListTile(
+                      title: Text("Delivery Address"),
+                    ),
+                    ListTile(
+                      dense: true,
+                      title: Text(
+                          '${_model.data![0].shippingDetail!.fullName}  ${_model.data![0].shippingDetail!.mobileNo}'),
+                      subtitle: Text(
+                          "${_model.data![0].shippingDetail!.cityName}, ${_model.data![0].shippingDetail!.stateName} , "
+                              "${_model.data![0].shippingDetail!.zip}"),
+                    ),
+                    Divider(),
+                    ListTile(
+                      title: Text("Payment Method"),
+                      subtitle: Text("${_model.data![0].paymentMethod}"),
+                      trailing: Text("${_model.data![0].paymentStatus}"),
+                    ),
+                    Column(children: [
+                      ListTile(dense: true,title: Text("Price Details"),),
+                      ListTile(title: Text("Product Charges"), trailing: Text("${_model.data![0].productDetail!.salePriceCurrency}"
+                          "${widget.price}"
+
+                      ),)
+                    ],)
+                  ],):Container()
+                  ],
                 )),
           ]),
     );

@@ -106,7 +106,7 @@ class _OrderListPageState extends State<OrderListPage> {
                                                           ""
                                                       ? NetworkImage(data[index]
                                                           .productDetail
-                                                          .image)
+                                                          .image??"")
                                                       : NetworkImage(
                                                           "https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg"))),
                                         ),

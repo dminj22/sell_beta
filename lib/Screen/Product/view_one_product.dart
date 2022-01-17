@@ -153,10 +153,10 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                 print(a);
               }
 
-              print(
-                  "Product Data = ${snapshot.data[0].status}\n Image Data = ${snapshot.data[1].status} \n Vendor Product Data = ${snapshot.data[2].status} \n"
-                  "Vendor Detail Data = ${snapshot.data[4].status} \n Review Data = ${snapshot.data[5].status} \n Related Products Data = ${snapshot.data[6].status} \n"
-                  "");
+              // print(
+              //     "Product Data = ${snapshot.data[0].status}\n Image Data = ${snapshot.data[1].status} \n Vendor Product Data = ${snapshot.data[2].status} \n"
+              //     "Vendor Detail Data = ${snapshot.data[4].status} \n Review Data = ${snapshot.data[5].status} \n Related Products Data = ${snapshot.data[6].status} \n"
+              //     "");
 
               return data != null
                   ? Scaffold(
