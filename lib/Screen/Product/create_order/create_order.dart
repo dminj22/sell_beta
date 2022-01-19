@@ -5,6 +5,7 @@ import 'package:sell_beta_customer/Api/api-repo/api.dart';
 import 'package:sell_beta_customer/Api/model/add_address_model.dart';
 import 'package:sell_beta_customer/Api/model/create_order_model.dart';
 import 'package:sell_beta_customer/Api/model/payment_initiate_model.dart';
+import 'package:sell_beta_customer/Api/model/verification_payment_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
 import 'package:sell_beta_customer/Screen/Orders/order_list.dart';
@@ -69,23 +70,31 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
       );
       if (response.status) {
         showToast("Verify Payment");
-        widget.createOrderData.addAll({
-          'user_id': '$user',
-          'address_id': '${widget.addressId ?? addressId}',
-          'payment_status': 'paid',
-          'payment_method': '$paymentType'
-        });
-        print(widget.createOrderData);
-        CreateOrderModel? model = await createOrder(widget.createOrderData);
-        if (model!.status == true) {
-          setState(() {
-            _model = model;
-            index = 2;
+        VerificationPaymentModel? vModel =await verifyPayment(response.reference);
+        if(vModel!.status == true){
+          showToast("Finalising Order");
+          widget.createOrderData.addAll({
+            'user_id': '$user',
+            'address_id': '${widget.addressId ?? addressId}',
+            'payment_status': 'paid',
+            'payment_method': '$paymentType'
           });
-          showToast(model.message);
-        } else {
-          showToast(model.message);
+          print(widget.createOrderData);
+          CreateOrderModel? model = await createOrder(widget.createOrderData);
+          if (model!.status == true) {
+            setState(() {
+              _model = model;
+              index = 2;
+            });
+            showToast(model.message);
+          } else {
+            showToast(model.message);
+          }
+        }else{
+          showToast(vModel.message);
         }
+      }else{
+        showToast(response.message);
       }
     }
   }
@@ -101,7 +110,6 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<UserProvider>(context);
-
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(

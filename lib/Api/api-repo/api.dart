@@ -36,6 +36,7 @@ import 'package:sell_beta_customer/Api/model/universal_model.dart';
 import 'package:sell_beta_customer/Api/model/update_profile_model.dart';
 import 'package:sell_beta_customer/Api/model/user_details_model.dart';
 import 'package:sell_beta_customer/Api/model/vendor_details_model.dart';
+import 'package:sell_beta_customer/Api/model/verification_payment_model.dart';
 import 'package:sell_beta_customer/Screen/Product/create_order/create_order.dart';
 
 Url _url = Url();
@@ -662,4 +663,22 @@ Future<PaymentInitiateModel?> paymentInitiate(email, amount, userId) async {
   } else {
     return null;
   }
+}
+
+
+Future<VerificationPaymentModel?> verifyPayment(referenceId)async{
+
+  var request = http.Request('GET', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/verify_payment/$referenceId'));
+
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return VerificationPaymentModel.fromJson(json.decode(str));
+  }
+  else {
+    return null;
+  }
+
 }
