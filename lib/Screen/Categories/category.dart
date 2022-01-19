@@ -48,6 +48,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               var data = snapshot.data.data;
+
               return ListView(
                 children: [
                   Row(

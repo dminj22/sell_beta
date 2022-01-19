@@ -155,7 +155,7 @@ class _ProductPageState extends State<ProductPage> {
                                                 width: width * .05,
                                               ),
                                               Image.asset(
-                                                  "images/icon/rating.png"),
+                                                  "images/icon/rating.png", scale: 4,),
                                               SizedBox(
                                                 width: width * .01,
                                               ),
@@ -175,7 +175,7 @@ class _ProductPageState extends State<ProductPage> {
                                             ],
                                           ),
                                         ),
-                                        Expanded(child: Icon(Icons.more_horiz)),
+                                        Expanded(child: Icon(Icons.more_horiz , size: 15,)),
                                       ],
                                     )
                                   ],
