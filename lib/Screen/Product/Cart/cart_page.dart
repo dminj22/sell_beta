@@ -94,7 +94,6 @@ class _CartPageState extends State<CartPage> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     var user = Provider.of<UserProvider>(context);
-
     return Scaffold(
         backgroundColor: Color(0xffE5E5E5),
         appBar: AppBar(
@@ -195,7 +194,9 @@ class _CartPageState extends State<CartPage> {
                 if (newChange == null || newChange) {
                   totalPrice = 0;
                   for (var i = 0; i < itemNo.length; i++) {
-                    totalPrice += itemNo[i] * price[i];
+                   if(selectPrice.contains(i)){
+                     totalPrice += itemNo[i] * price[i];
+                   }
                   }
                   newChange = false;
                 } else {
@@ -210,9 +211,7 @@ class _CartPageState extends State<CartPage> {
                           child: Card(
                             child: ListTile(
                               title: Text("Total:"),
-                              subtitle: Text(finalPrice == 0
-                                  ? "${snapshot.data.data[0].productList.salePriceCurrency} $totalPrice"
-                                  : "${snapshot.data.data[0].productList.salePriceCurrency} $finalPrice"),
+                              subtitle: Text(totalPrice !=0?"${snapshot.data.data[0].productList.salePriceCurrency} $totalPrice":"Select Product"),
                               trailing: SizedBox(
                                 width: 100,
                                 child: CustomButtons(
@@ -225,7 +224,7 @@ class _CartPageState extends State<CartPage> {
                                                   CreateOrderPage(
                                                     createOrderData:
                                                         multiDelete,
-                                                    price: finalPrice,
+                                                    price: totalPrice,
                                                   )));
                                     } else {
                                       showToast("Select Product");
@@ -275,11 +274,8 @@ class _CartPageState extends State<CartPage> {
 
                                                     multiDelete.remove(
                                                         "cart_id[$index]");
-                                                    print(multiDelete);
-                                                    finalPrice -= double.parse(
-                                                        snapshot.data
-                                                            .data[index].price);
-                                                    print(finalPrice);
+                                                    selectPrice.remove(index);
+                                                    newChange = true;
                                                   } else {
                                                     deleteItem.add(snapshot.data
                                                         .data[index].cartId);
@@ -287,10 +283,8 @@ class _CartPageState extends State<CartPage> {
                                                       "cart_id[$index]":
                                                           "${snapshot.data.data[index].cartId}"
                                                     });
-                                                    finalPrice += double.parse(
-                                                        snapshot.data
-                                                            .data[index].price);
-                                                    print(finalPrice);
+                                                    selectPrice.add(index);
+                                                    newChange = true;
                                                   }
                                                 });
                                               },

@@ -63,7 +63,7 @@ class _AddressListState extends State<AddressList> {
             } else if (snapshot.hasError) {
               return Icon(Icons.error_outline);
             } else {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
           }),
     );
