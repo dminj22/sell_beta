@@ -155,7 +155,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   onlinePayment(user.userId.toString(), widget.email??emailController.text);
                                 }
                               },
-                              color: [Color(0xffF15741), Color(0xffF29F46)],
+                              color: [Color(0xffF15741),  Color(0xffF29F46)],
                               text: "Payment",
                             ),
                           )
