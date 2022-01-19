@@ -16,9 +16,10 @@ class CreateOrderPage extends StatefulWidget {
   final addressId;
   final page;
   final price;
+  final email;
 
   const CreateOrderPage(
-      {Key? key, this.addressId, this.page, this.createOrderData, this.price})
+      {Key? key, this.addressId, this.page, this.createOrderData, this.price, this.email})
       : super(key: key);
 
   @override
@@ -45,11 +46,11 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
 
   int? addressId;
 
-  onlinePayment(user) async {
+  onlinePayment( user, email) async {
     print(widget.price.runtimeType);
     showToast("Payment Initialise");
     PaymentInitiateModel? model =
-        await paymentInitiate("dminj@gmail.com", "${widget.price}", "44");
+        await paymentInitiate("$email", "${widget.price}", "$user");
     if (model!.status == true) {
       dynamic lastCharge = widget.price;
       var i =  lastCharge.toInt();
@@ -59,7 +60,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
         ..reference = "${model.data!.reference}"
         ..accessCode = "${model.data!.accessCode}"
         // or ..accessCode = _getAccessCodeFrmInitialization()
-        ..email = 'demo@email.com';
+        ..email = '$email';
       CheckoutResponse response = await plugin.checkout(
         context,
         method: CheckoutMethod.card,
@@ -151,7 +152,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     showToast(model.message);
                                   }
                                 } else {
-                                  onlinePayment(user.userId.toString());
+                                  onlinePayment(user.userId.toString(), widget.email??emailController.text);
                                 }
                               },
                               color: [Color(0xffF15741), Color(0xffF29F46)],

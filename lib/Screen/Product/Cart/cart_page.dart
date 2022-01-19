@@ -420,39 +420,38 @@ class _CartPageState extends State<CartPage> {
                                                                   0xffF15741)),
                                                         ),
                                                         InkWell(
-                                                            onTap: () {
-                                                              setState(
-                                                                  () async {
-                                                                if (itemNo[
-                                                                        index] >
-                                                                    1) {
-                                                                  itemNo[index] =
-                                                                      itemNo[index] -
-                                                                          1;
-                                                                  newChange =
-                                                                      true;
-                                                                }
-                                                                if (newChange) {
-                                                                  var cartId =
-                                                                      "${data[index].cartId}";
-                                                                  var quantity =
-                                                                      "${itemNo[index]}";
-                                                                  var newPrice =
-                                                                      "${double.parse(item.productList.salePrice) * itemNo[index]}";
-                                                                  CartUpdateQuantityModel?
-                                                                      model =
-                                                                      await updateCartQuantity(
-                                                                          cartId,
-                                                                          quantity,
-                                                                          newPrice);
-                                                                  if (model!
-                                                                          .status ==
-                                                                      true) {
-                                                                    showToast(
-                                                                        "Updated");
-                                                                  } else {}
-                                                                }
-                                                              });
+                                                            onTap: () async {
+                                                              if (itemNo[
+                                                              index] >
+                                                                  1) {
+                                                               setState(() {
+                                                                 itemNo[index] =
+                                                                     itemNo[index] -
+                                                                         1;
+                                                                 newChange =
+                                                                 true;
+                                                               });
+                                                              }
+                                                              if (newChange) {
+                                                                var cartId =
+                                                                    "${data[index].cartId}";
+                                                                var quantity =
+                                                                    "${itemNo[index]}";
+                                                                var newPrice =
+                                                                    "${double.parse(item.productList.salePrice) * itemNo[index]}";
+                                                                CartUpdateQuantityModel?
+                                                                model =
+                                                                    await updateCartQuantity(
+                                                                    cartId,
+                                                                    quantity,
+                                                                    newPrice);
+                                                                if (model!
+                                                                    .status ==
+                                                                    true) {
+                                                                  showToast(
+                                                                      "Updated");
+                                                                } else {}
+                                                              }
                                                             },
                                                             child: ImageIcon(
                                                                 AssetImage(

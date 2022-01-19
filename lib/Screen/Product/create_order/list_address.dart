@@ -48,6 +48,7 @@ class _AddressListState extends State<AddressList> {
                                       builder: (context) => CreateOrderPage(
                                           addressId: data.addressId,createOrderData: widget.createOrderData,
                                           price: widget.price,
+                                          email: data.email,
                                           page: 1)));
                             },
                             dense: true,
