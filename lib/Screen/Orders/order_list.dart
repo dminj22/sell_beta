@@ -71,7 +71,6 @@ class _OrderListPageState extends State<OrderListPage> {
                             physics: ClampingScrollPhysics(),
                             itemCount: data.length,
                             itemBuilder: (BuildContext context, int index) {
-                              DateTime date = data[index].orderDate;
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Card(
@@ -87,7 +86,7 @@ class _OrderListPageState extends State<OrderListPage> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ViewSingleOrderPage(orderId: data[index].orderId,)));
+                                                    ViewSingleOrderPage(orderId: data[index].orderId, singleData: data[index],)));
                                       },
                                       leading: Card(
                                         elevation: 0,
@@ -124,7 +123,7 @@ class _OrderListPageState extends State<OrderListPage> {
                                             ),
                                           ),
                                           Text(
-                                            "Order on : ${date.day}-${date.month}-${date.year}\nPayment Type : ${data[index].paymentMethod}\nBrands : ${data[index].productDetail.brandName}",
+                                            "Order on : ${data[index].orderDate}\nPayment Type : ${data[index].paymentMethod}\nBrands : ${data[index].productDetail.brandName}",
                                             style:
                                                 GoogleFonts.inter(fontSize: 10),
                                           ),

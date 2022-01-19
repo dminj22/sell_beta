@@ -480,19 +480,21 @@ Future<GetCatSubCatModel?> getCatSubCat(id) async {
 }
 
 Future<CustomerOrderListModel?> customerOrderList(userId) async {
-  var request = http.MultipartRequest(
-      'POST',
-      Uri.parse(
-          'https://bodyrecomp.app/app/project/ecom/api/customerorder_list'));
-  request.fields.addAll({'user_id': '$userId'});
+try{  var request = http.MultipartRequest(
+    'POST',
+    Uri.parse(
+        'https://bodyrecomp.app/app/project/ecom/api/customerorder_list'));
+request.fields.addAll({'user_id': '$userId'});
 
-  http.StreamedResponse response = await request.send();
-  if (response.statusCode == 200) {
-    final str = await response.stream.bytesToString();
-    return CustomerOrderListModel.fromJson(json.decode(str));
-  } else {
-    return null;
-  }
+http.StreamedResponse response = await request.send();
+if (response.statusCode == 200) {
+  final str = await response.stream.bytesToString();
+  return CustomerOrderListModel.fromJson(json.decode(str));
+} else {
+  return null;
+}}catch(e){
+  print(e);
+}
 }
 
 Future<CustomerOrderListModel?> singleOrderDetails(orderId) async {
