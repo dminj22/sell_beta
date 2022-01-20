@@ -276,6 +276,7 @@ class CustomTextField extends StatelessWidget {
 
   final label;
 
+
   const CustomTextField(
       {Key? key,
       this.visible,
@@ -306,6 +307,7 @@ class CustomTextField extends StatelessWidget {
       child: SizedBox(
         height: 45,
         child: TextFormField(
+          keyboardType: keyboard,
           enabled: enable ?? true,
           controller: controller,
           obscureText: obscure ?? false,
