@@ -207,6 +207,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     children: [
                       Expanded(
                           child: CustomTextField(
+                            keyboard: TextInputType.number,
                         controller: phoneController,
                         label: Text("Phone Number"),
                       )),
@@ -255,6 +256,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     children: [
                       Expanded(
                           child: CustomTextField(
+                            keyboard: TextInputType.number,
                         controller: pinController,
                         label: Text("Pin Code"),
                       )),

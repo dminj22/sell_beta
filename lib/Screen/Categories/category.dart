@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
-import 'package:sell_beta_customer/Api/model/get_sub_category_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Screen/Product/product_by_sub_id.dart';
 
@@ -21,6 +20,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
   var titleName = "Category";
 
   var categoryId;
+
+  bool start = true;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +49,9 @@ class _CategoriesPageState extends State<CategoriesPage> {
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasData) {
               var data = snapshot.data.data;
+               if(start){
+                 categoryId = data[0].categoryId.toString();
+               }
 
               return ListView(
                 children: [
@@ -69,6 +73,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                       selected = index;
                                     titleName =   item.categoryName;
                                     categoryId = item.categoryId;
+                                    start = false;
+                                    showToast("Loading");
                                     });
                                   },
                                   child: Container(
