@@ -390,7 +390,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                               size: 20,
                                             ),
                                             Text(
-                                              data[0].ratingTotal,
+                                              data[0].ratingTotal??"",
                                               style: GoogleFonts.inter(
                                                   color: Colors.white,
                                                   fontSize: 12,
@@ -418,14 +418,14 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                       Column(
                                         children: [
                                           Text(
-                                            "${data[0].shippingCostCurrency} ${data[0].salePrice}",
+                                            "${data[0].shippingCostCurrency??""} ${data[0].salePrice??""}",
                                             style: GoogleFonts.roboto(
                                                 color: Color(0xffEA5524),
                                                 fontWeight: FontWeight.w700,
                                                 fontSize: 22),
                                           ),
                                           Text(
-                                            '${data[0].discount}% OFF',
+                                            '${data[0].discount??""}% OFF',
                                             style: GoogleFonts.poppins(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 12,
@@ -452,9 +452,9 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                 height: height * .03,
                               ),
                               ListTile(
-                                title: Text("${data[0].title}".toUpperCase()),
+                                title: Text("${data[0].title??""}".toUpperCase()),
                                 subtitle: Html(
-                                  data: data[0].description,
+                                  data: data[0].description??"",
                                 ),
                               ),
                               data[0]
@@ -630,7 +630,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                             ),
                                             RatingBarIndicator(
                                               rating: double.parse(
-                                                  vendor[0].ratingTotal),
+                                                  vendor[0].ratingTotal??"0.0"),
                                               itemBuilder: (context, index) =>
                                                   Icon(
                                                 Icons.star,

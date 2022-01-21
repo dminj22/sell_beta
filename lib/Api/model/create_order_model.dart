@@ -58,7 +58,7 @@ class Datum {
   String ?deliveryStatus;
   String ?paymentStatus;
   String ?paymentMethod;
-  DateTime? orderDate;
+  String? orderDate;
   CartDetail? cartDetail;
   ProductDetail? productDetail;
   VendorDetail ?vendorDetail;
@@ -74,7 +74,7 @@ class Datum {
     deliveryStatus: json["delivery_status"] == null ? null : json["delivery_status"],
     paymentStatus: json["payment_status"] == null ? null : json["payment_status"],
     paymentMethod: json["payment_method"] == null ? null : json["payment_method"],
-    orderDate: json["order_date"] == null ? null : DateTime.parse(json["order_date"]),
+    orderDate: json["order_date"] == null ? null : json["order_date"],
     cartDetail: json["cart__detail"] == null ? null : CartDetail.fromJson(json["cart__detail"]),
     productDetail: json["product_detail"] == null ? null : ProductDetail.fromJson(json["product_detail"]),
     vendorDetail: json["vendor_detail"] == null ? null : VendorDetail.fromJson(json["vendor_detail"]),
@@ -91,7 +91,7 @@ class Datum {
     "delivery_status": deliveryStatus == null ? null : deliveryStatus,
     "payment_status": paymentStatus == null ? null : paymentStatus,
     "payment_method": paymentMethod == null ? null : paymentMethod,
-    "order_date": orderDate == null ? null : "${orderDate!.year.toString().padLeft(4, '0')}-${orderDate?.month.toString().padLeft(2, '0')}-${orderDate?.day.toString().padLeft(2, '0')}",
+    "order_date": orderDate == null ? null : orderDate,
     "cart__detail": cartDetail == null ? null : cartDetail?.toJson(),
     "product_detail": productDetail == null ? null : productDetail!.toJson(),
     "vendor_detail": vendorDetail == null ? null : vendorDetail!.toJson(),

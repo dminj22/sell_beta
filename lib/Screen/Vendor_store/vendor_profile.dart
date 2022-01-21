@@ -151,7 +151,7 @@ class _VendorProfileState extends State<VendorProfile> {
                                           color: Color(0xffF7941D)),
                                     ),
                                     RatingBarIndicator(
-                                      rating: double.parse(vendor[0].ratingTotal),
+                                      rating: double.parse(vendor[0].ratingTotal??"0.0"),
                                       itemBuilder: (context, index) =>
                                           Icon(
                                             Icons.star,
