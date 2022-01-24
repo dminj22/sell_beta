@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
+import 'package:sell_beta_customer/Screen/Product/view_one_product.dart';
 
 class FeedsPage extends StatefulWidget {
   const FeedsPage({Key? key}) : super(key: key);
@@ -133,7 +134,63 @@ class _FeedsState extends State<Feeds> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Image.network(widget.data.image[0].url??""),
-          )
+          ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            itemCount: widget.data.productList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  elevation: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListTile(
+                      onTap: () {
+Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewSingleProductPage(
+  productId: widget.data.productList[index].productId,
+vendorId: widget.data.vendorId,
+)));
+                      },
+                      leading: Card(
+                        elevation: 0,
+                        color: Colors.transparent,
+                        child: Container(
+                          width: 60,
+                          height: 100,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(10)),
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: widget.data.productList[index]
+                                      .image !=
+                                      ""
+                                      ? NetworkImage(widget.data.productList[index]
+                                      .image??"")
+                                      : NetworkImage(
+                                      "https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg"))),
+                        ),
+                      ),
+                      title: Text(
+                          "${widget.data.productList[index].title}"),
+                      trailing: Icon(Icons.arrow_forward_ios),
+                      subtitle: Wrap(
+                        children: [
+                         Text("${widget.data.productList[index].salePriceCurrency} ${widget.data.productList[index].salePrice}")
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          Divider(thickness: 5,)
         ],
       ),
     );
