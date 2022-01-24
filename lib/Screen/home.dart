@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sell_beta_customer/Config/icon_config.dart';
+import 'package:sell_beta_customer/Screen/Feeds/feeds.dart';
 import 'package:sell_beta_customer/Screen/Product/Cart/cart_page.dart';
 import 'package:sell_beta_customer/Screen/Tabs/account_page.dart';
 import 'package:sell_beta_customer/Screen/Tabs/home_page.dart';
@@ -22,10 +23,7 @@ class _HomeState extends State<Home> {
   TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    FeedsPage(),
     Text(
       'Index 2: School',
       style: optionStyle,

@@ -78,10 +78,12 @@ class _FeedsState extends State<Feeds> {
                 SizedBox(
                     height: h * .03,
                     child: ElevatedButton.icon(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Color(0xffFFD4CE)),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))
-                      ),
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Color(0xffFFD4CE)),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)))),
                         onPressed: () {},
                         icon: Icon(
                           Icons.store,
@@ -90,11 +92,15 @@ class _FeedsState extends State<Feeds> {
                         ),
                         label: Text(
                           "Store",
-                          style: TextStyle(fontSize: 8 , color: Color(0xffF15741)),
+                          style:
+                              TextStyle(fontSize: 8, color: Color(0xffF15741)),
                         ))),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("771 Followers" , style: TextStyle(fontSize: 10 , fontWeight: FontWeight.bold),),
+                  child: Text(
+                    "771 Followers",
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
                 )
               ],
             ),
@@ -133,7 +139,7 @@ class _FeedsState extends State<Feeds> {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Image.network(widget.data.image[0].url??""),
+            child: Image.network(widget.data.image[0].url ?? ""),
           ),
           ListView.builder(
             shrinkWrap: true,
@@ -151,10 +157,14 @@ class _FeedsState extends State<Feeds> {
                     padding: const EdgeInsets.all(8.0),
                     child: ListTile(
                       onTap: () {
-Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewSingleProductPage(
-  productId: widget.data.productList[index].productId,
-vendorId: widget.data.vendorId,
-)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ViewSingleProductPage(
+                                      productId: widget
+                                          .data.productList[index].productId,
+                                      vendorId: widget.data.vendorId,
+                                    )));
                       },
                       leading: Card(
                         elevation: 0,
@@ -163,25 +173,25 @@ vendorId: widget.data.vendorId,
                           width: 60,
                           height: 100,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(10)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
                               image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: widget.data.productList[index]
-                                      .image !=
-                                      ""
-                                      ? NetworkImage(widget.data.productList[index]
-                                      .image??"")
+                                  image: widget.data.productList[index].image !=
+                                          ""
+                                      ? NetworkImage(widget
+                                              .data.productList[index].image ??
+                                          "")
                                       : NetworkImage(
-                                      "https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg"))),
+                                          "https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg"))),
                         ),
                       ),
-                      title: Text(
-                          "${widget.data.productList[index].title}"),
+                      title: Text("${widget.data.productList[index].title}"),
                       trailing: Icon(Icons.arrow_forward_ios),
                       subtitle: Wrap(
                         children: [
-                         Text("${widget.data.productList[index].salePriceCurrency} ${widget.data.productList[index].salePrice}")
+                          Text(
+                              "${widget.data.productList[index].salePriceCurrency} ${widget.data.productList[index].salePrice}")
                         ],
                       ),
                     ),
@@ -190,7 +200,31 @@ vendorId: widget.data.vendorId,
               );
             },
           ),
-          Divider(thickness: 5,)
+          Container(
+            color: Color(0xffF7F7F7),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Wrap(
+                  children: [
+                    SizedBox(width: 10,),
+                    TextButton.icon(
+                        onPressed: () {},
+                        icon: Icon(Icons.favorite_border),
+                        label: Text("25")),
+                    TextButton.icon(
+                        onPressed: () {},
+                        icon: Icon(Icons.message),
+                        label: Text("251")),
+                  ],
+                ),
+                IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+              ],
+            ),
+          ),
+          Divider(
+            thickness: 5,
+          )
         ],
       ),
     );
