@@ -21,6 +21,7 @@ import 'package:sell_beta_customer/Api/model/get_cart_list_model.dart';
 import 'package:sell_beta_customer/Api/model/get_cat_sub_cat_model.dart';
 import 'package:sell_beta_customer/Api/model/get_category_model.dart';
 import 'package:sell_beta_customer/Api/model/get_city_list_model.dart';
+import 'package:sell_beta_customer/Api/model/get_feeds_model.dart';
 import 'package:sell_beta_customer/Api/model/get_follower_model.dart';
 import 'package:sell_beta_customer/Api/model/get_product_by_sub_id_model.dart';
 import 'package:sell_beta_customer/Api/model/get_sub_category_model.dart';
@@ -678,6 +679,24 @@ Future<VerificationPaymentModel?> verifyPayment(referenceId)async{
   if (response.statusCode == 200) {
     final str = await response.stream.bytesToString();
     return VerificationPaymentModel.fromJson(json.decode(str));
+  }
+  else {
+    return null;
+  }
+
+}
+
+
+
+Future<GetFeedsModel?> getFeeds()async{
+
+  var request = http.Request('POST', Uri.parse('https://bodyrecomp.app/app/project/ecom/api/feed_list'));
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    final str = await response.stream.bytesToString();
+    return GetFeedsModel.fromJson(json.decode(str));
   }
   else {
     return null;

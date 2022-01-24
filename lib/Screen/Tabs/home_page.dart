@@ -6,6 +6,7 @@ import 'package:sell_beta_customer/Api/api-repo/api.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
 import 'package:sell_beta_customer/Config/icon_config.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
+import 'package:sell_beta_customer/Screen/Feeds/feeds.dart';
 import 'package:sell_beta_customer/Screen/Orders/order_list.dart';
 import 'package:sell_beta_customer/Screen/Profile/profile_edit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -131,6 +132,9 @@ class _HomePageState extends State<HomePage> {
                         title: 'Wallet',
                       ),
                       DrawerListTile(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> FeedsPage()));
+                        },
                         url: _drawerIcon.feedsIcon,
                         title:'Feeds',
                       ),
