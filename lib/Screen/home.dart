@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sell_beta_customer/Config/icon_config.dart';
+import 'package:sell_beta_customer/Screen/Categories/category.dart';
 import 'package:sell_beta_customer/Screen/Feeds/feeds.dart';
 import 'package:sell_beta_customer/Screen/Product/Cart/cart_page.dart';
 import 'package:sell_beta_customer/Screen/Tabs/account_page.dart';
@@ -24,10 +25,7 @@ class _HomeState extends State<Home> {
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     FeedsPage(),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    CategoriesPage(),
     CartPage(),
    AccountPage()
   ];

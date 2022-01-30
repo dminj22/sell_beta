@@ -111,7 +111,7 @@ class _OrderListPageState extends State<OrderListPage> {
                                         ),
                                       ),
                                       title: Text(
-                                          "${data[index].productDetail.title}"),
+                                          "${data[index].productDetail.title}" , maxLines: 1,),
                                       trailing: Icon(Icons.arrow_forward_ios),
                                       subtitle: Wrap(
                                         children: [

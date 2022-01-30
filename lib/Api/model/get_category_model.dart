@@ -15,7 +15,7 @@ class GetCategoryModel {
     this.data,
   });
 
-  dynamic status;
+  bool? status;
   String? message;
   List<Datum>? data;
 
@@ -36,46 +36,62 @@ class Datum {
   Datum({
     this.categoryId,
     this.categoryName,
-    this.description,
-    this.digital,
     this.banner,
     this.catImgUrl,
-    this.dataBrands,
-    this.dataVendors,
-    this.dataSubdets,
+    this.subcategoryList,
   });
 
   String? categoryId;
   String? categoryName;
-  dynamic description;
-  String? digital;
   String? banner;
   String? catImgUrl;
-  String? dataBrands;
-  String? dataVendors;
-  String? dataSubdets;
+  List<SubcategoryList>? subcategoryList;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     categoryId: json["category_id"] == null ? null : json["category_id"],
     categoryName: json["category_name"] == null ? null : json["category_name"],
-    description: json["description"],
-    digital: json["digital"] == null ? null : json["digital"],
     banner: json["banner"] == null ? null : json["banner"],
     catImgUrl: json["cat_img_url"] == null ? null : json["cat_img_url"],
-    dataBrands: json["data_brands"] == null ? null : json["data_brands"],
-    dataVendors: json["data_vendors"] == null ? null : json["data_vendors"],
-    dataSubdets: json["data_subdets"] == null ? null : json["data_subdets"],
+    subcategoryList: json["subcategory_list"] == null ? null : List<SubcategoryList>.from(json["subcategory_list"].map((x) => SubcategoryList.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "category_id": categoryId == null ? null : categoryId,
     "category_name": categoryName == null ? null : categoryName,
-    "description": description,
-    "digital": digital == null ? null : digital,
     "banner": banner == null ? null : banner,
     "cat_img_url": catImgUrl == null ? null : catImgUrl,
-    "data_brands": dataBrands == null ? null : dataBrands,
-    "data_vendors": dataVendors == null ? null : dataVendors,
-    "data_subdets": dataSubdets == null ? null : dataSubdets,
+    "subcategory_list": subcategoryList == null ? null : List<dynamic>.from(subcategoryList!.map((x) => x.toJson())),
+  };
+}
+
+class SubcategoryList {
+  SubcategoryList({
+    this.subCategoryId,
+    this.subCategoryName,
+    this.category,
+    this.banner,
+    this.subCatImgUrl,
+  });
+
+  String? subCategoryId;
+  String? subCategoryName;
+  String? category;
+  String? banner;
+  String? subCatImgUrl;
+
+  factory SubcategoryList.fromJson(Map<String, dynamic> json) => SubcategoryList(
+    subCategoryId: json["sub_category_id"] == null ? null : json["sub_category_id"],
+    subCategoryName: json["sub_category_name"] == null ? null : json["sub_category_name"],
+    category: json["category"] == null ? null : json["category"],
+    banner: json["banner"] == null ? null : json["banner"],
+    subCatImgUrl: json["sub_cat_img_url"] == null ? null : json["sub_cat_img_url"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "sub_category_id": subCategoryId == null ? null : subCategoryId,
+    "sub_category_name": subCategoryName == null ? null : subCategoryName,
+    "category": category == null ? null : category,
+    "banner": banner == null ? null : banner,
+    "sub_cat_img_url": subCatImgUrl == null ? null : subCatImgUrl,
   };
 }

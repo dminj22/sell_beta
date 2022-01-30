@@ -53,20 +53,19 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
   _addToCart(userId, prodId, price, vendorId, quantity, size, color) async {
     try {
       if (selectedColor != null && selectedSize != null) {
-        if (userId != null&& prodId != null&& price != null&& vendorId != null&& quantity != null&& size!= null && color != null) {
+        if (userId != null &&
+            prodId != null &&
+            price != null &&
+            vendorId != null &&
+            quantity != null &&
+            size != null &&
+            color != null) {
           AddToCartModel? model = await addToCart(
-              userId,
-              vendorId,
-              prodId,
-              quantity,
-              price,
-              size,
-              color);
+              userId, vendorId, prodId, quantity, price, size, color);
           if (model!.status) {
-
             showSnackBar(context, model.message);
           } else {
-            showSnackBar(context , model.message);
+            showSnackBar(context, model.message);
           }
         } else {
           showSnackBar(context, "Something Went Wrong");
@@ -78,6 +77,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
       print(e);
     }
   }
+
   _showDelivery() {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -88,6 +88,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
           return DeliveryModel();
         });
   }
+
   _showService() {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -98,6 +99,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
           return ServiceModel();
         });
   }
+
   _showSpecification(proData) {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -105,17 +107,24 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
         isScrollControlled: true,
         context: context,
         builder: (_) {
-          return SpecificationBottomModel(proData: proData,);
+          return SpecificationBottomModel(
+            proData: proData,
+          );
         });
   }
-  _showVariation(proColor ,proSize  , proData){
+
+  _showVariation(proColor, proSize, proData) {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
         isScrollControlled: true,
         context: context,
         builder: (_) {
-          return VariationBottom(proColor: proColor, proSize: proSize, proData: proData,);
+          return VariationBottom(
+            proColor: proColor,
+            proSize: proSize,
+            proData: proData,
+          );
         });
   }
 
@@ -130,11 +139,11 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
     return Scaffold(
       body: FutureBuilder(
           future: Future.wait([
-            getSingleProduct(widget.productId , user.userId),
+            getSingleProduct(widget.productId, user.userId),
             getSingleProductImage(widget.productId),
             getShopProduct(widget.vendorId),
             getCartList(user.userId),
-            getVendorDetails(widget.vendorId , user.userId),
+            getVendorDetails(widget.vendorId, user.userId),
             productReview(widget.productId),
             getRelatedProduct(widget.subCatId)
           ]),
@@ -199,14 +208,8 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                   var quantity = "1";
                                   var size = "$sizeValue";
                                   var color = "$selectedColor";
-                                  _addToCart(
-                                      userId,
-                                      prodId,
-                                      price,
-                                      vendorId,
-                                      quantity,
-                                      size,
-                                      color);
+                                  _addToCart(userId, prodId, price, vendorId,
+                                      quantity, size, color);
                                 },
                                 text: "Add to Cart",
                                 color: [Color(0xffF15741), Color(0xffF29F46)],
@@ -241,15 +244,8 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                           ? CarouselSlider(
                                               items: image
                                                   .map((item) => Container(
-                                                        child: Container(
-                                                          height: height / 2,
-                                                          decoration: BoxDecoration(
-                                                              image: DecorationImage(
-                                                                  fit: BoxFit
-                                                                      .contain,
-                                                                  image:
-                                                                      NetworkImage(
-                                                                          item))),
+                                                        child: CustomImage(
+                                                          url: item,
                                                         ),
                                                       ))
                                                   .toList(),
@@ -390,7 +386,7 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                               size: 20,
                                             ),
                                             Text(
-                                              data[0].ratingTotal??"",
+                                              data[0].ratingTotal ?? "",
                                               style: GoogleFonts.inter(
                                                   color: Colors.white,
                                                   fontSize: 12,
@@ -418,14 +414,14 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                       Column(
                                         children: [
                                           Text(
-                                            "${data[0].shippingCostCurrency??""} ${data[0].salePrice??""}",
+                                            "${data[0].shippingCostCurrency ?? ""} ${data[0].salePrice ?? ""}",
                                             style: GoogleFonts.roboto(
                                                 color: Color(0xffEA5524),
                                                 fontWeight: FontWeight.w700,
                                                 fontSize: 22),
                                           ),
                                           Text(
-                                            '${data[0].discount??""}% OFF',
+                                            '${data[0].discount ?? ""}% OFF',
                                             style: GoogleFonts.poppins(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 12,
@@ -437,8 +433,14 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                         children: [
                                           IconButton(
                                               onPressed: () {},
-                                              icon:data[0].wishlist == "true"? Icon(Icons
-                                                  .favorite_border_outlined):Icon(Icons.favorite , color: Color(primaryColor),)),
+                                              icon: data[0].wishlist == "true"
+                                                  ? Icon(Icons
+                                                      .favorite_border_outlined)
+                                                  : Icon(
+                                                      Icons.favorite,
+                                                      color:
+                                                          Color(primaryColor),
+                                                    )),
                                           IconButton(
                                               onPressed: () {},
                                               icon: Icon(Icons.share)),
@@ -452,72 +454,79 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                 height: height * .03,
                               ),
                               ListTile(
-                                title: Text("${data[0].title??""}".toUpperCase()),
+                                title: Text(
+                                    "${data[0].title ?? ""}".toUpperCase()),
                                 subtitle: Html(
-                                  data: data[0].description??"",
+                                  data: data[0].description ?? "",
                                 ),
                               ),
-                              data[0]
-                                  .productColors.isNotEmpty?
-                              Container(
-                                child: Column(
-                                  children: [
-                                    ListTile(
-                                      onTap: (){
-                                        _showVariation(data[0]
-                                            .productColors ,data[0].size , data[0]);
-                                      },
-                                      title: Text("Variations"),
-                                      trailing: Text("View All >"),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Wrap(
-                                          children: data[0]
-                                              .productColors
-                                              .map<Widget>((e) => Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 4),
-                                                    child: OutlinedButton(
-                                                      style: ButtonStyle(
-                                                          side: MaterialStateProperty.all(BorderSide(
-                                                              color: selectedColor ==
-                                                                      e.color
-                                                                  ? Color(
-                                                                      primaryColor)
-                                                                  : Colors
-                                                                      .grey))),
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          selectedColor =
-                                                              e.color;
-                                                        });
-                                                      },
-                                                      child: Text(
-                                                        e.color,
-                                                        style: GoogleFonts.poppins(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 12,
-                                                            color: selectedColor ==
-                                                                    e.color
-                                                                ? Color(
-                                                                    primaryColor)
-                                                                : Colors.grey),
-                                                      ),
-                                                    ),
-                                                  ))
-                                              .toList(),
-                                        ),
+                              data[0].productColors.isNotEmpty
+                                  ? Container(
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            onTap: () {
+                                              _showVariation(
+                                                  data[0].productColors,
+                                                  data[0].size,
+                                                  data[0]);
+                                            },
+                                            title: Text("Variations"),
+                                            trailing: Text("View All >"),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Wrap(
+                                                children: data[0]
+                                                    .productColors
+                                                    .map<Widget>((e) => Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      4),
+                                                          child: OutlinedButton(
+                                                            style: ButtonStyle(
+                                                                side: MaterialStateProperty.all(BorderSide(
+                                                                    color: selectedColor ==
+                                                                            e
+                                                                                .color
+                                                                        ? Color(
+                                                                            primaryColor)
+                                                                        : Colors
+                                                                            .grey))),
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                selectedColor =
+                                                                    e.color;
+                                                              });
+                                                            },
+                                                            child: Text(
+                                                              e.color,
+                                                              style: GoogleFonts.poppins(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize: 12,
+                                                                  color: selectedColor == e.color
+                                                                      ? Color(
+                                                                          primaryColor)
+                                                                      : Colors
+                                                                          .grey),
+                                                            ),
+                                                          ),
+                                                        ))
+                                                    .toList(),
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     )
-                                  ],
-                                ),
-                              ):Container(),
+                                  : Container(),
                               data[0].size != ""
                                   ? Container(
                                       child: Column(
@@ -558,7 +567,8 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                               setState(() {
                                                                 selectedSize =
                                                                     e.key;
-                                                                sizeValue = e.value;
+                                                                sizeValue =
+                                                                    e.value;
                                                               });
                                                             },
                                                             child: Text(
@@ -630,7 +640,8 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                             ),
                                             RatingBarIndicator(
                                               rating: double.parse(
-                                                  vendor[0].ratingTotal??"0.0"),
+                                                  vendor[0].ratingTotal ??
+                                                      "0.0"),
                                               itemBuilder: (context, index) =>
                                                   Icon(
                                                 Icons.star,
@@ -704,9 +715,9 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                   ),
                                 )
                               : Container(
-                            height: 30,
-                            child: Center(child: Text("No Review")),
-                          ),
+                                  height: 30,
+                                  child: Center(child: Text("No Review")),
+                                ),
 
                           //shop Products
 
@@ -722,18 +733,10 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                               ? Container(
                                                   child: ListTile(
                                                     leading: Container(
-                                                      height: 50,
                                                       width: 50,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          10)),
-                                                          image: DecorationImage(
-                                                              image: NetworkImage(
-                                                                  vendor[0]
-                                                                      .logo))),
+                                                      height: 50,
+                                                      child: CustomImage(
+                                                          url: vendor[0].logo),
                                                     ),
                                                     title: Text(
                                                         "${vendor[0].company}"),
@@ -741,7 +744,8 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                         RatingBarIndicator(
                                                       rating: double.parse(
                                                           vendor[0]
-                                                              .ratingTotal??"0.0"),
+                                                                  .ratingTotal ??
+                                                              "0.0"),
                                                       itemBuilder:
                                                           (context, index) =>
                                                               Icon(
@@ -845,23 +849,37 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                                   .circular(
                                                                       10)),
                                                       onPressed: () async {
-                                                        var userId = "${user.userId}";
-                                                        var vendorId = "${widget.vendorId}";
-                                                        var type = vendor[0].follow == "false"?"Follow":"UnFollow";
-                                                        FollowVendorModel? model = await followVendor(userId, vendorId, type);
-                                                        if(model!.status == true){
-                                                          setState(() {
-
-                                                          });
-                                                          showToast(model.message);
-                                                        }else{
-                                                          setState(() {
-
-                                                          });
-                                                          showToast(model.message);
+                                                        var userId =
+                                                            "${user.userId}";
+                                                        var vendorId =
+                                                            "${widget.vendorId}";
+                                                        var type =
+                                                            vendor[0].follow ==
+                                                                    "false"
+                                                                ? "Follow"
+                                                                : "UnFollow";
+                                                        FollowVendorModel?
+                                                            model =
+                                                            await followVendor(
+                                                                userId,
+                                                                vendorId,
+                                                                type);
+                                                        if (model!.status ==
+                                                            true) {
+                                                          setState(() {});
+                                                          showToast(
+                                                              model.message);
+                                                        } else {
+                                                          setState(() {});
+                                                          showToast(
+                                                              model.message);
                                                         }
                                                       },
-                                                      child: Text(vendor[0].follow == "false"?"Follow":"UnFollow"),
+                                                      child: Text(
+                                                          vendor[0].follow ==
+                                                                  "false"
+                                                              ? "Follow"
+                                                              : "UnFollow"),
                                                     ),
                                                     OutlineButton(
                                                       shape: RoundedRectangleBorder(
@@ -876,9 +894,15 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                                   .circular(
                                                                       10)),
                                                       onPressed: () {
-                                                        Navigator.push(context, MaterialPageRoute(builder: (context)=> VendorHomePage(
-                                                          vendorId: widget.vendorId,
-                                                        )));
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        VendorHomePage(
+                                                                          vendorId:
+                                                                              widget.vendorId,
+                                                                        )));
                                                       },
                                                       child: Text("Visit"),
                                                     ),
@@ -919,29 +943,18 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                                         .productId,
                                                                     vendorId: prod
                                                                         .vendorId,
-                                                                    subCatId: prod.subCategory,
+                                                                    subCatId: prod
+                                                                        .subCategory,
                                                                   )));
                                                     },
                                                     child: Container(
                                                       child: Column(
                                                         children: [
-                                                          Container(
-                                                            height: height * .2,
-                                                            width:
-                                                                double.infinity,
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.only(
-                                                                    topLeft: Radius
-                                                                        .circular(
-                                                                            10),
-                                                                    topRight: Radius
-                                                                        .circular(
-                                                                            10)),
-                                                                image: DecorationImage(
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                    image: NetworkImage(
-                                                                        prod.imgUrl))),
+                                                          Expanded(
+                                                            flex: 6,
+                                                            child: CustomImage(
+                                                              url: prod.imgUrl,
+                                                            ),
                                                           ),
                                                           ListTile(
                                                             dense: true,
@@ -1141,31 +1154,22 @@ class _ViewSingleProductPageState extends State<ViewSingleProductPage> {
                                                             ViewSingleProductPage(
                                                               productId: rData
                                                                   .productId,
-                                                              subCatId: rData.subCategory,
-                                                              vendorId: rData.vendorId,
+                                                              subCatId: rData
+                                                                  .subCategory,
+                                                              vendorId: rData
+                                                                  .vendorId,
                                                             )));
                                               },
                                               child: Container(
                                                 child: Column(
                                                   children: [
-                                                    Container(
-                                                      height: height * .2,
-                                                      width: double.infinity,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          10)),
-                                                          image: DecorationImage(
-                                                              fit: BoxFit.cover,
-                                                              image: NetworkImage(
-                                                                  rData
-                                                                      .imgUrl))),
+                                                    SizedBox(
+                                                      height: 5,
                                                     ),
+                                                    Expanded(
+                                                        flex: 7,
+                                                        child: CustomImage(
+                                                            url: rData.imgUrl)),
                                                     ListTile(
                                                       dense: true,
                                                       title: Text(

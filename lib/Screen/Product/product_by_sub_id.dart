@@ -89,18 +89,19 @@ class _ProductPageState extends State<ProductPage> {
                               child: Container(
                                 child: Column(
                                   children: [
-                                    Container(
-                                      height: height * .2,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(10),
-                                              topRight: Radius.circular(10)),
-                                          image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image:
-                                                  NetworkImage(item.imgUrl))),
-                                    ),
+                                    Expanded(child: CustomImage(url: item.imgUrl)),
+                                    // Container(
+                                    //   height: height * .2,
+                                    //   width: double.infinity,
+                                    //   decoration: BoxDecoration(
+                                    //       borderRadius: BorderRadius.only(
+                                    //           topLeft: Radius.circular(10),
+                                    //           topRight: Radius.circular(10)),
+                                    //       image: DecorationImage(
+                                    //           fit: BoxFit.cover,
+                                    //           image:
+                                    //               NetworkImage(item.imgUrl))),
+                                    // ),
                                     ListTile(
                                       dense: true,
                                       title: Text(

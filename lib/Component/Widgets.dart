@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 
 // class CustomTextField extends StatelessWidget {
 //   final obscure;
@@ -276,7 +278,6 @@ class CustomTextField extends StatelessWidget {
 
   final label;
 
-
   const CustomTextField(
       {Key? key,
       this.visible,
@@ -293,7 +294,8 @@ class CustomTextField extends StatelessWidget {
       this.check,
       this.iconColor,
       this.enable,
-      this.initialValue, this.label})
+      this.initialValue,
+      this.label})
       : super(key: key);
 
   @override
@@ -510,6 +512,31 @@ class CustomAppBar extends StatelessWidget {
             ])),
       ),
       actions: action,
+    );
+  }
+}
+
+class CustomImage extends StatelessWidget {
+  final url;
+
+  const CustomImage({Key? key, this.url}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CachedNetworkImage(
+      imageUrl: url,
+      imageBuilder: (context, imageProvider) => Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.contain),
+        ),
+      ),
+      placeholder: (context, url) => Shimmer.fromColors(
+          baseColor: Colors.white,
+          highlightColor: Color(0xffEA5524),
+          child: Image.asset("images/logo.png" , color: Colors.grey, scale: 2,)),
+      errorWidget: (context, url, error) => Icon(Icons.error),
     );
   }
 }

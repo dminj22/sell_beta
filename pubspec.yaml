@@ -54,7 +54,10 @@ dependencies:
   flutter_html: ^2.2.1
   flutter_expanded_tile: ^0.3.6
   dropdown_search: ^2.0.1
+  scroll_to_index: ^2.1.1
   flutter_paystack: ^1.0.5+1
+  cached_network_image: ^3.2.0
+  shimmer: ^2.0.0
 
 
 
