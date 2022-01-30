@@ -194,9 +194,9 @@ class _CartPageState extends State<CartPage> {
                 if (newChange == null || newChange) {
                   totalPrice = 0;
                   for (var i = 0; i < itemNo.length; i++) {
-                   if(selectPrice.contains(i)){
-                     totalPrice += itemNo[i] * price[i];
-                   }
+                    if (selectPrice.contains(i)) {
+                      totalPrice += itemNo[i] * price[i];
+                    }
                   }
                   newChange = false;
                 } else {
@@ -211,7 +211,9 @@ class _CartPageState extends State<CartPage> {
                           child: Card(
                             child: ListTile(
                               title: Text("Total:"),
-                              subtitle: Text(totalPrice !=0?"${snapshot.data.data[0].productList.salePriceCurrency} $totalPrice":"Select Product"),
+                              subtitle: Text(totalPrice != 0
+                                  ? "${snapshot.data.data[0].productList.salePriceCurrency} $totalPrice"
+                                  : "Select Product"),
                               trailing: SizedBox(
                                 width: 100,
                                 child: CustomButtons(
@@ -416,15 +418,15 @@ class _CartPageState extends State<CartPage> {
                                                         InkWell(
                                                             onTap: () async {
                                                               if (itemNo[
-                                                              index] >
+                                                                      index] >
                                                                   1) {
-                                                               setState(() {
-                                                                 itemNo[index] =
-                                                                     itemNo[index] -
-                                                                         1;
-                                                                 newChange =
-                                                                 true;
-                                                               });
+                                                                setState(() {
+                                                                  itemNo[index] =
+                                                                      itemNo[index] -
+                                                                          1;
+                                                                  newChange =
+                                                                      true;
+                                                                });
                                                               }
                                                               if (newChange) {
                                                                 var cartId =
@@ -434,13 +436,13 @@ class _CartPageState extends State<CartPage> {
                                                                 var newPrice =
                                                                     "${double.parse(item.productList.salePrice) * itemNo[index]}";
                                                                 CartUpdateQuantityModel?
-                                                                model =
+                                                                    model =
                                                                     await updateCartQuantity(
-                                                                    cartId,
-                                                                    quantity,
-                                                                    newPrice);
+                                                                        cartId,
+                                                                        quantity,
+                                                                        newPrice);
                                                                 if (model!
-                                                                    .status ==
+                                                                        .status ==
                                                                     true) {
                                                                   showToast(
                                                                       "Updated");
@@ -602,20 +604,7 @@ class NoItem extends StatelessWidget {
                                                   children: [
                                                     Container(
                                                       height: height * .2,
-                                                      width: double.infinity,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          10)),
-                                                          image: DecorationImage(
-                                                              fit: BoxFit.cover,
-                                                              image: NetworkImage(
-                                                                  prod.imgUrl))),
+                                                      child: CustomImage(url: prod.imgUrl,),
                                                     ),
                                                     ListTile(
                                                       dense: true,

@@ -43,6 +43,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
   var newCityId;
 
   String? addressId;
+  dynamic selectedAddress;
 
   var emailId;
 
@@ -212,31 +213,55 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                       (BuildContext context, int index) {
                                     var data = snapshot.data.data[index];
                                     return Card(
-                                      child: ListTile(
-                                        onTap: () {
-                                          setState(() {
-                                            currentStep = 1;
-                                            emailId = data.email;
-                                            addressId = data.addressId.toString();
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            onTap: () {
 
-                                          });
-                                          // Navigator.push(
-                                          //     context,
-                                          //     MaterialPageRoute(
-                                          //         builder: (context) =>
-                                          //             CreateOrderPage(
-                                          //                 addressId:
-                                          //                     data.addressId,
-                                          //                 createOrderData: widget
-                                          //                     .createOrderData,
-                                          //                 price: widget.price,
-                                          //                 email: data.email,
-                                          //                 page: 1)));
-                                        },
-                                        dense: true,
-                                        title: Text("Name : ${data.fullName}"),
-                                        subtitle: Text(
-                                            "${data.email} - ${data.mobileNo}\n${data.address}"),
+                                              // Navigator.push(
+                                              //     context,
+                                              //     MaterialPageRoute(
+                                              //         builder: (context) =>
+                                              //             CreateOrderPage(
+                                              //                 addressId:
+                                              //                     data.addressId,
+                                              //                 createOrderData: widget
+                                              //                     .createOrderData,
+                                              //                 price: widget.price,
+                                              //                 email: data.email,
+                                              //                 page: 1)));
+                                            },
+                                            dense: true,
+                                            title: Text("Shipping Address"),
+                                            trailing: TextButton(onPressed: (){
+                                              setState(() {
+                                                currentStep = 1;
+                                                emailId = data.email;
+                                                addressId = data.addressId.toString();
+                                                selectedAddress = data;
+                                              });
+                                            }, child: Text("Select"),),
+                                          ),
+                                          Divider(thickness: 2,),
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 14),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  SizedBox(height: 5,),
+                                                Text(data.fullName??""),SizedBox(height: 5,),
+                                                Text(data.email??""),SizedBox(height: 5,),
+                                                Text(data.mobileNo??""),SizedBox(height: 5,),
+                                                Text(data.address??""),SizedBox(height: 5,),
+                                                Text(data.stateName??""),SizedBox(height: 5,),
+                                                Text(data.cityName??""),SizedBox(height: 5,),
+                                                Text(data.zip??""),SizedBox(height: 5,),
+                                              ],),
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     );
                                   },
@@ -255,6 +280,62 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                 title: Text("Payment"),
                 content: Column(
                   children: [
+                    selectedAddress!=null?
+                    Card(
+                      child: Column(
+                        children: [
+
+                          ListTile(
+
+                            onTap: () {
+
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>
+                              //             CreateOrderPage(
+                              //                 addressId:
+                              //                     data.addressId,
+                              //                 createOrderData: widget
+                              //                     .createOrderData,
+                              //                 price: widget.price,
+                              //                 email: data.email,
+                              //                 page: 1)));
+                            },
+                            dense: true,
+                            tileColor: Colors.grey.shade200,
+                            title: Text("Shipping Address"),
+                            // trailing: TextButton(onPressed: (){
+                            //   setState(() {
+                            //     currentStep = 1;
+                            //     emailId = .email;
+                            //     addressId = data.addressId.toString();
+                            //     selectedAddress = data;
+                            //   });
+                            // }, child: Text("Select"),),
+                          ),
+                          Divider(thickness: 2,),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 5,),
+                                  Text(selectedAddress.fullName??""),SizedBox(height: 5,),
+                                  Text(selectedAddress.email??""),SizedBox(height: 5,),
+                                  Text(selectedAddress.mobileNo??""),SizedBox(height: 5,),
+                                  Text(selectedAddress.address??""),SizedBox(height: 5,),
+                                  Text(selectedAddress.stateName??""),SizedBox(height: 5,),
+                                  Text(selectedAddress.cityName??""),SizedBox(height: 5,),
+                                  Text(selectedAddress.zip??""),SizedBox(height: 5,),
+                                ],),
+                            ),
+                          )
+                        ],
+                      ),
+                    ):Container(),
                     ListTile(
                       title: Text(
                         "Payment Type",
