@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:provider/provider.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
 import 'package:sell_beta_customer/Api/model/add_address_model.dart';
@@ -7,6 +8,7 @@ import 'package:sell_beta_customer/Api/model/create_order_model.dart';
 import 'package:sell_beta_customer/Api/model/payment_initiate_model.dart';
 import 'package:sell_beta_customer/Api/model/verification_payment_model.dart';
 import 'package:sell_beta_customer/Component/Widgets.dart';
+import 'package:sell_beta_customer/Config/theme.dart';
 import 'package:sell_beta_customer/Provider/user_provider.dart';
 import 'package:sell_beta_customer/Screen/Orders/order_list.dart';
 import 'package:sell_beta_customer/Screen/Product/create_order/list_address.dart';
@@ -20,11 +22,7 @@ class CreateOrderPage extends StatefulWidget {
   final price;
 
   const CreateOrderPage(
-      {Key? key,
-      this.addressId,
-      this.page,
-      this.createOrderData,
-      this.price})
+      {Key? key, this.addressId, this.page, this.createOrderData, this.price})
       : super(key: key);
 
   @override
@@ -44,6 +42,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
 
   String? addressId;
   dynamic selectedAddress;
+  var addressRadio;
 
   var emailId;
 
@@ -64,7 +63,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
         ..email = '$email';
       CheckoutResponse response = await plugin.checkout(
         context,
-        method: CheckoutMethod.card,
+        fullscreen: true,
+        method: CheckoutMethod.selectable,
         // Defaults to CheckoutMethod.selectable
         charge: charge,
       );
@@ -100,6 +100,54 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
     }
   }
 
+  Future<void> _showMyDialog(noOfDel, onPressed) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(25.0))),
+          title: const Text('Confirm to delete?'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    'Are you sure want to delete?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Padding(
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: Color(primaryColor)),
+                  ),
+                )),
+            SizedBox(
+              width: 100,
+              child: CustomButtons(
+                onPressed: onPressed,
+                color: [Color(0xffF15741), Color(0xffF29F46)],
+                text: "Delete",
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -127,7 +175,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
         ),
       ),
       body: Stepper(
-          elevation: 5,
+          elevation: 4,
           type: StepperType.horizontal,
           physics: ClampingScrollPhysics(),
           controlsBuilder: (context, control) {
@@ -142,8 +190,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                 if (paymentType == "COD") {
                                   widget.createOrderData.addAll({
                                     'user_id': '${user.userId}',
-                                    'address_id':
-                                        '$addressId',
+                                    'address_id': '$addressId',
                                     'payment_status': 'Unpaid',
                                     'payment_method': '$paymentType'
                                   });
@@ -160,7 +207,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                     showToast(model.message);
                                   }
                                 } else {
-                                  onlinePayment(user.userId.toString(), emailId);
+                                  onlinePayment(
+                                      user.userId.toString(), emailId);
                                 }
                               },
                               color: [Color(0xffF15741), Color(0xffF29F46)],
@@ -170,9 +218,11 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                         : Expanded(
                             child: CustomButtons(
                               onPressed: () {
-                                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>
-                                Home()
-                                ), (route) => false);
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Home()),
+                                    (route) => false);
                               },
                               color: [Color(0xffF15741), Color(0xffF29F46)],
                               text: "Purchase More",
@@ -184,7 +234,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
           currentStep: currentStep,
           steps: [
             Step(
-              state: StepState.editing,
+              state: currentStep == 0 ? StepState.editing : StepState.complete,
+              isActive: currentStep == 0 ? true : false,
               title: Text("Address"),
               content: FutureBuilder(
                   future: getAddressList(user.userId),
@@ -202,8 +253,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   setState(() {});
                                 }
                               },
-                              icon: Icon(Icons.add_location),
-                              label: Text("Add Address")),
+                              icon: Icon(Icons.add_location , color: Color(primaryColor),),
+                              label: Text("Add Address" , style: TextStyle(color: Color(primaryColor)),)),
                           snapshot.data.status
                               ? ListView.builder(
                                   shrinkWrap: true,
@@ -213,54 +264,73 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                       (BuildContext context, int index) {
                                     var data = snapshot.data.data[index];
                                     return Card(
+                                      elevation:selectedAddress==data.addressId
+                                          .toString()?4:2,
                                       child: Column(
                                         children: [
                                           ListTile(
-                                            onTap: () {
-
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             CreateOrderPage(
-                                              //                 addressId:
-                                              //                     data.addressId,
-                                              //                 createOrderData: widget
-                                              //                     .createOrderData,
-                                              //                 price: widget.price,
-                                              //                 email: data.email,
-                                              //                 page: 1)));
-                                            },
                                             dense: true,
-                                            title: Text("Shipping Address"),
-                                            trailing: TextButton(onPressed: (){
-                                              setState(() {
-                                                currentStep = 1;
-                                                emailId = data.email;
-                                                addressId = data.addressId.toString();
-                                                selectedAddress = data;
-                                              });
-                                            }, child: Text("Select"),),
+                                            title:
+                                                Text(data.fullName ?? ""),
+                                            trailing: Radio(
+                                                value: data.addressId
+                                                        .toString(),
+                                                groupValue: addressRadio,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    addressRadio = value;
+                                                  });
+                                                }),
                                           ),
-                                          Divider(thickness: 2,),
+                                          Divider(height: 5,),
                                           Align(
                                             alignment: Alignment.centerLeft,
                                             child: Padding(
-                                              padding: const EdgeInsets.only(left: 14),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                              padding:
+                                                  const EdgeInsets.only(
+                                                      left: 14 , top: 10),
+                                              child: Wrap(
                                                 children: [
-                                                  SizedBox(height: 5,),
-                                                Text(data.fullName??""),SizedBox(height: 5,),
-                                                Text(data.email??""),SizedBox(height: 5,),
-                                                Text(data.mobileNo??""),SizedBox(height: 5,),
-                                                Text(data.address??""),SizedBox(height: 5,),
-                                                Text(data.stateName??""),SizedBox(height: 5,),
-                                                Text(data.cityName??""),SizedBox(height: 5,),
-                                                Text(data.zip??""),SizedBox(height: 5,),
-                                              ],),
+                                                  Text("${data.email} , "),
+                                                  Text("${data.address} , "),
+                                                  Text("${data.stateName} , "),
+                                                  Text("${data.cityName} , "),
+                                                  Text("${data.zip} , "),
+                                                ],
+                                              ),
                                             ),
-                                          )
+                                          ),
+
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(left: 14 , top: 15 , bottom: 10),
+                                                child: Text("${data.mobileNo}"),
+                                              ),
+                                              addressRadio==data.addressId.toString()?
+                                              IconButton(onPressed: (){
+                                                _showMyDialog("noOfDel", (){});
+                                              }, icon: Icon(Icons.delete , color: Colors.red,)):Container()
+                                            ],
+                                          ),
+                                          addressRadio==data.addressId.toString()?
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10 ,vertical: 10),
+                                            child: CustomButtons(
+                                              onPressed: (){
+                                                setState(() {
+                                                  currentStep = 1;
+                                                  emailId = data.email;
+                                                  addressId =
+                                                      data.addressId.toString();
+                                                  selectedAddress = data;
+                                                });
+                                              },
+                                              color: [Color(0xffF15741), Color(0xffF29F46)],
+                                              text: "Deliver to this Address",
+                                            ),
+                                          ):Container()
                                         ],
                                       ),
                                     );
@@ -272,70 +342,17 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     } else if (snapshot.hasError) {
                       return Icon(Icons.error_outline);
                     } else {
-                      return Center(child: CircularProgressIndicator());
+                      return Loading();
                     }
                   }),
             ),
             Step(
+                state:
+                    currentStep == 1 ? StepState.editing : StepState.complete,
+                isActive: currentStep == 1 ? true : false,
                 title: Text("Payment"),
                 content: Column(
                   children: [
-                    selectedAddress!=null?
-                    Card(
-                      child: Column(
-                        children: [
-
-                          ListTile(
-
-                            onTap: () {
-
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) =>
-                              //             CreateOrderPage(
-                              //                 addressId:
-                              //                     data.addressId,
-                              //                 createOrderData: widget
-                              //                     .createOrderData,
-                              //                 price: widget.price,
-                              //                 email: data.email,
-                              //                 page: 1)));
-                            },
-                            dense: true,
-                            tileColor: Colors.grey.shade200,
-                            title: Text("Shipping Address"),
-                            // trailing: TextButton(onPressed: (){
-                            //   setState(() {
-                            //     currentStep = 1;
-                            //     emailId = .email;
-                            //     addressId = data.addressId.toString();
-                            //     selectedAddress = data;
-                            //   });
-                            // }, child: Text("Select"),),
-                          ),
-                          Divider(thickness: 2,),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 14),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: 5,),
-                                  Text(selectedAddress.fullName??""),SizedBox(height: 5,),
-                                  Text(selectedAddress.email??""),SizedBox(height: 5,),
-                                  Text(selectedAddress.mobileNo??""),SizedBox(height: 5,),
-                                  Text(selectedAddress.address??""),SizedBox(height: 5,),
-                                  Text(selectedAddress.stateName??""),SizedBox(height: 5,),
-                                  Text(selectedAddress.cityName??""),SizedBox(height: 5,),
-                                  Text(selectedAddress.zip??""),SizedBox(height: 5,),
-                                ],),
-                            ),
-                          )
-                        ],
-                      ),
-                    ):Container(),
                     ListTile(
                       title: Text(
                         "Payment Type",
@@ -344,6 +361,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                     ),
                     Card(
                       child: ListTile(
+                        leading: Icon(Icons.delivery_dining),
                         trailing: Radio(
                             value: "COD",
                             groupValue: paymentType,
@@ -366,12 +384,51 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                 paymentType = value;
                               });
                             }),
-                        title: Text("Online"),
+                        leading: Image.asset("images/payment logo.png", height: 20,),
+                        title: Text("Paystack"),
+                      ),
+                    ),
+                    selectedAddress != null
+                        ? Card(
+                      child: Column(
+                        children: [
+                          ListTile(
+                            dense: true,
+                            tileColor: Colors.grey.shade200,
+                            title: Text("Shipping Address"),
+                            trailing: TextButton(onPressed: (){}, child: Text("change" ,style: TextStyle(color: Color(primaryColor)),),),
+                          ),
+                          Divider(
+                            thickness: 2,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(selectedAddress.fullName ?? ""),
+                                  Text(selectedAddress.email ?? ""),
+                                  Text(selectedAddress.mobileNo ?? ""),
+                                  Text(selectedAddress.address ?? ""),
+                                  Text(selectedAddress.stateName ?? ""),
+                                  Text(selectedAddress.cityName ?? ""),
+                                  Text(selectedAddress.zip ?? ""),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     )
+                        : Container(),
                   ],
                 )),
             Step(
+                state:
+                    currentStep == 2 ? StepState.editing : StepState.complete,
+                isActive: currentStep == 2 ? true : false,
                 title: Text("Summary"),
                 content: Column(
                   children: [
