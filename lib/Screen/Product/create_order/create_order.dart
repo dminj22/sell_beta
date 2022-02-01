@@ -396,7 +396,11 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                             dense: true,
                             tileColor: Colors.grey.shade200,
                             title: Text("Shipping Address"),
-                            trailing: TextButton(onPressed: (){}, child: Text("change" ,style: TextStyle(color: Color(primaryColor)),),),
+                            trailing: TextButton(onPressed: (){
+                              setState(() {
+                                currentStep = 0;
+                              });
+                            }, child: Text("change" ,style: TextStyle(color: Color(primaryColor)),),),
                           ),
                           Divider(
                             thickness: 2,
@@ -418,11 +422,13 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                 ],
                               ),
                             ),
-                          )
+                          ),
+
                         ],
                       ),
                     )
                         : Container(),
+                    ListTile(title: Text("Total Price"), trailing: Text(widget.price.toString()),)
                   ],
                 )),
             Step(
