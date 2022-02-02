@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
@@ -85,6 +87,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
           if (model!.status == true) {
             setState(() {
               _model = model;
+              log(model.toString());
               currentStep = 2;
             });
             showToast(model.message);
@@ -112,8 +115,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(
-                    'Are you sure want to delete?'),
+                Text('Are you sure want to delete?'),
               ],
             ),
           ),
@@ -128,7 +130,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                 },
                 child: Padding(
                   padding:
-                  const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                   child: Text(
                     "Cancel",
                     style: TextStyle(color: Color(primaryColor)),
@@ -253,8 +255,14 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   setState(() {});
                                 }
                               },
-                              icon: Icon(Icons.add_location , color: Color(primaryColor),),
-                              label: Text("Add Address" , style: TextStyle(color: Color(primaryColor)),)),
+                              icon: Icon(
+                                Icons.add_location,
+                                color: Color(primaryColor),
+                              ),
+                              label: Text(
+                                "Add Address",
+                                style: TextStyle(color: Color(primaryColor)),
+                              )),
                           snapshot.data.status
                               ? ListView.builder(
                                   shrinkWrap: true,
@@ -264,17 +272,18 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                       (BuildContext context, int index) {
                                     var data = snapshot.data.data[index];
                                     return Card(
-                                      elevation:selectedAddress==data.addressId
-                                          .toString()?4:2,
+                                      elevation: selectedAddress ==
+                                              data.addressId.toString()
+                                          ? 4
+                                          : 2,
                                       child: Column(
                                         children: [
                                           ListTile(
                                             dense: true,
-                                            title:
-                                                Text(data.fullName ?? ""),
+                                            title: Text(data.fullName ?? ""),
                                             trailing: Radio(
-                                                value: data.addressId
-                                                        .toString(),
+                                                value:
+                                                    data.addressId.toString(),
                                                 groupValue: addressRadio,
                                                 onChanged: (value) {
                                                   setState(() {
@@ -282,13 +291,14 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                                   });
                                                 }),
                                           ),
-                                          Divider(height: 5,),
+                                          Divider(
+                                            height: 5,
+                                          ),
                                           Align(
                                             alignment: Alignment.centerLeft,
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.only(
-                                                      left: 14 , top: 10),
+                                              padding: const EdgeInsets.only(
+                                                  left: 14, top: 10),
                                               child: Wrap(
                                                 children: [
                                                   Text("${data.email} , "),
@@ -300,37 +310,58 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                               ),
                                             ),
                                           ),
-
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.only(left: 14 , top: 15 , bottom: 10),
+                                                padding: const EdgeInsets.only(
+                                                    left: 14,
+                                                    top: 15,
+                                                    bottom: 10),
                                                 child: Text("${data.mobileNo}"),
                                               ),
-                                              addressRadio==data.addressId.toString()?
-                                              IconButton(onPressed: (){
-                                                _showMyDialog("noOfDel", (){});
-                                              }, icon: Icon(Icons.delete , color: Colors.red,)):Container()
+                                              addressRadio ==
+                                                      data.addressId.toString()
+                                                  ? IconButton(
+                                                      onPressed: () {
+                                                        _showMyDialog(
+                                                            "noOfDel", () {});
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red,
+                                                      ))
+                                                  : Container()
                                             ],
                                           ),
-                                          addressRadio==data.addressId.toString()?
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 10 ,vertical: 10),
-                                            child: CustomButtons(
-                                              onPressed: (){
-                                                setState(() {
-                                                  currentStep = 1;
-                                                  emailId = data.email;
-                                                  addressId =
-                                                      data.addressId.toString();
-                                                  selectedAddress = data;
-                                                });
-                                              },
-                                              color: [Color(0xffF15741), Color(0xffF29F46)],
-                                              text: "Deliver to this Address",
-                                            ),
-                                          ):Container()
+                                          addressRadio ==
+                                                  data.addressId.toString()
+                                              ? Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 10),
+                                                  child: CustomButtons(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        currentStep = 1;
+                                                        emailId = data.email;
+                                                        addressId = data
+                                                            .addressId
+                                                            .toString();
+                                                        selectedAddress = data;
+                                                      });
+                                                    },
+                                                    color: [
+                                                      Color(0xffF15741),
+                                                      Color(0xffF29F46)
+                                                    ],
+                                                    text:
+                                                        "Deliver to this Address",
+                                                  ),
+                                                )
+                                              : Container()
                                         ],
                                       ),
                                     );
@@ -384,51 +415,90 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                 paymentType = value;
                               });
                             }),
-                        leading: Image.asset("images/payment logo.png", height: 20,),
+                        leading: Image.asset(
+                          "images/payment logo.png",
+                          height: 20,
+                        ),
                         title: Text("Paystack"),
                       ),
                     ),
+                    Divider(
+                      thickness: 2,
+                    ),
                     selectedAddress != null
                         ? Card(
-                      child: Column(
-                        children: [
-                          ListTile(
-                            dense: true,
-                            tileColor: Colors.grey.shade200,
-                            title: Text("Shipping Address"),
-                            trailing: TextButton(onPressed: (){
-                              setState(() {
-                                currentStep = 0;
-                              });
-                            }, child: Text("change" ,style: TextStyle(color: Color(primaryColor)),),),
-                          ),
-                          Divider(
-                            thickness: 2,
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 14),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(selectedAddress.fullName ?? ""),
-                                  Text(selectedAddress.email ?? ""),
-                                  Text(selectedAddress.mobileNo ?? ""),
-                                  Text(selectedAddress.address ?? ""),
-                                  Text(selectedAddress.stateName ?? ""),
-                                  Text(selectedAddress.cityName ?? ""),
-                                  Text(selectedAddress.zip ?? ""),
-                                ],
-                              ),
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  dense: true,
+                                  tileColor: Colors.grey.shade200,
+                                  title: Text("Shipping Address"),
+                                  trailing: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        currentStep = 0;
+                                      });
+                                    },
+                                    child: Text(
+                                      "change",
+                                      style:
+                                          TextStyle(color: Color(primaryColor)),
+                                    ),
+                                  ),
+                                ),
+                                Divider(
+                                  thickness: 2,
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 14),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(selectedAddress.fullName ?? ""),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(selectedAddress.email ?? ""),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(selectedAddress.mobileNo ?? ""),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(selectedAddress.address ?? ""),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(selectedAddress.stateName ?? ""),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(selectedAddress.cityName ?? ""),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(selectedAddress.zip ?? ""),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-
-                        ],
-                      ),
-                    )
+                          )
                         : Container(),
-                    ListTile(title: Text("Total Price"), trailing: Text(widget.price.toString()),)
+                    Card(child: ListTile(title: Text("Price Details"))),
+                    ListTile(
+                      dense: true,
+                      title: Text("Total Price"),
+                      trailing: Text(widget.price.toString()),
+                    )
                   ],
                 )),
             Step(
@@ -479,38 +549,71 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                   );
                                 },
                               ),
-                              ListTile(
-                                title: Text("Delivery Address"),
-                              ),
-                              ListTile(
-                                dense: true,
-                                title: Text(
-                                    '${_model.data![0].shippingDetail!.fullName}  ${_model.data![0].shippingDetail!.mobileNo}'),
-                                subtitle: Text(
-                                    "${_model.data![0].shippingDetail!.cityName}, ${_model.data![0].shippingDetail!.stateName} , "
-                                    "${_model.data![0].shippingDetail!.zip}"),
-                              ),
-                              Divider(),
-                              ListTile(
-                                title: Text("Payment Method"),
-                                subtitle:
-                                    Text("${_model.data![0].paymentMethod}"),
-                                trailing:
-                                    Text("${_model.data![0].paymentStatus}"),
-                              ),
-                              Column(
+                              Card(
+                                  child: Column(
                                 children: [
                                   ListTile(
-                                    dense: true,
-                                    title: Text("Price Details"),
+                                    title: Text("Delivery Address"),
                                   ),
                                   ListTile(
-                                    title: Text("Product Charges"),
-                                    trailing: Text(
-                                        "${_model.data![0].productDetail!.salePriceCurrency}"
-                                        "${widget.price}"),
-                                  )
+                                    dense: true,
+                                    title: Text(
+                                        '${_model.data![0].shippingDetail!.fullName}  ${_model.data![0].shippingDetail!.mobileNo}'),
+                                    subtitle: Text(
+                                        "${_model.data![0].shippingDetail!.cityName}, ${_model.data![0].shippingDetail!.stateName} , "
+                                        "${_model.data![0].shippingDetail!.zip}"),
+                                  ),
                                 ],
+                              )),
+                              Divider(),
+                              Card(
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      title: Text("Seller Details"),
+                                    ),
+                                    ListTile(
+                                      leading: Container(
+                                          width: 50,
+                                          height: 50,
+                                          child: CustomImage(
+                                            url: _model
+                                                .data![0].vendorDetail!.image,
+                                          )),
+                                      title: Text("Seller Name"),
+                                      trailing: Text(
+                                          "${_model.data![0].vendorDetail!.name}"),
+                                    ),
+                                    ListTile(
+                                      title: Text("Address"),
+                                      subtitle: Text(
+                                          "${_model.data![0].vendorDetail!.address} ,${_model.data![0].vendorDetail!.state} , ${_model.data![0].vendorDetail!.zip}"),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Card(
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      title: Text("Payment Method"),
+                                      subtitle: Text(
+                                          "${_model.data![0].paymentMethod}"),
+                                      trailing: Text(
+                                          "${_model.data![0].paymentStatus}"),
+                                    ),
+                                    ListTile(
+                                      dense: true,
+                                      title: Text("Price Details"),
+                                    ),
+                                    ListTile(
+                                      title: Text("Product Charges"),
+                                      trailing: Text(
+                                          "${_model.data![0].productDetail!.salePriceCurrency}"
+                                          "${widget.price}"),
+                                    )
+                                  ],
+                                ),
                               )
                             ],
                           )
