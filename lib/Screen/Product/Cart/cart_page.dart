@@ -25,12 +25,15 @@ class _CartPageState extends State<CartPage> {
   var selectItem = [];
   var deleteItem = [];
   var price = [];
+  var selectedProduct = [];
 
   Map<String, String> multiDelete = {};
 
   dynamic newChange;
 
   var selectPrice = [];
+
+  bool progress = false;
 
   Future<void> _showMyDialog(noOfDel, onPressed) async {
     return showDialog<void>(
@@ -214,28 +217,35 @@ class _CartPageState extends State<CartPage> {
                               subtitle: Text(totalPrice != 0
                                   ? "${snapshot.data.data[0].productList.salePriceCurrency} $totalPrice"
                                   : "Select Product"),
-                              trailing: SizedBox(
-                                width: 100,
-                                child: CustomButtons(
-                                  onPressed: () {
-                                    if (multiDelete.isNotEmpty) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CreateOrderPage(
-                                                    createOrderData:
-                                                        multiDelete,
-                                                    price: totalPrice,
-                                                  )));
-                                    } else {
-                                      showToast("Select Product");
-                                    }
-                                  },
-                                  color: [Color(0xffF15741), Color(0xffF29F46)],
-                                  text: "Check Out",
-                                ),
-                              ),
+                              trailing: !progress
+                                  ? SizedBox(
+                                      width: 100,
+                                      child: CustomButtons(
+                                        onPressed: () {
+                                          if (multiDelete.isNotEmpty) {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CreateOrderPage(
+                                                          createOrderData:
+                                                              multiDelete,
+                                                          price: totalPrice,
+                                                          selectedProduct:
+                                                              selectedProduct,
+                                                        )));
+                                          } else {
+                                            showToast("Select Product");
+                                          }
+                                        },
+                                        color: [
+                                          Color(0xffF15741),
+                                          Color(0xffF29F46)
+                                        ],
+                                        text: "Check Out",
+                                      ),
+                                    )
+                                  : CircularProgressIndicator(),
                             ),
                           ),
                         )
@@ -277,6 +287,8 @@ class _CartPageState extends State<CartPage> {
                                                     multiDelete.remove(
                                                         "cart_id[$index]");
                                                     selectPrice.remove(index);
+                                                    selectedProduct
+                                                        .remove(item);
                                                     newChange = true;
                                                   } else {
                                                     deleteItem.add(snapshot.data
@@ -286,6 +298,7 @@ class _CartPageState extends State<CartPage> {
                                                           "${snapshot.data.data[index].cartId}"
                                                     });
                                                     selectPrice.add(index);
+                                                    selectedProduct.add(item);
                                                     newChange = true;
                                                   }
                                                 });
@@ -421,13 +434,29 @@ class _CartPageState extends State<CartPage> {
                                                                       index] >
                                                                   1) {
                                                                 setState(() {
+                                                                  progress =
+                                                                      true;
                                                                   itemNo[index] =
                                                                       itemNo[index] -
                                                                           1;
+                                                                  deleteItem
+                                                                      .clear();
+                                                                  multiDelete
+                                                                      .clear();
+                                                                  selectedProduct
+                                                                      .clear();
+                                                                  selectedProduct
+                                                                      .clear();
+                                                                  selectItem = snapshot
+                                                                      .data.data
+                                                                      .map((i) =>
+                                                                          false)
+                                                                      .toList();
                                                                   newChange =
                                                                       true;
                                                                 });
                                                               }
+
                                                               if (newChange) {
                                                                 var cartId =
                                                                     "${data[index].cartId}";
@@ -444,6 +473,10 @@ class _CartPageState extends State<CartPage> {
                                                                 if (model!
                                                                         .status ==
                                                                     true) {
+                                                                  setState(() {
+                                                                    progress =
+                                                                        false;
+                                                                  });
                                                                   showToast(
                                                                       "Updated");
                                                                 } else {}
@@ -457,9 +490,21 @@ class _CartPageState extends State<CartPage> {
                                                         InkWell(
                                                             onTap: () async {
                                                               setState(() {
+                                                                progress = true;
                                                                 itemNo[index] =
                                                                     itemNo[index] +
                                                                         1;
+                                                                deleteItem
+                                                                    .clear();
+                                                                multiDelete
+                                                                    .clear();
+                                                                selectedProduct
+                                                                    .clear();
+                                                                selectItem = snapshot
+                                                                    .data.data
+                                                                    .map((i) =>
+                                                                        false)
+                                                                    .toList();
                                                                 newChange =
                                                                     true;
                                                               });
@@ -479,6 +524,10 @@ class _CartPageState extends State<CartPage> {
                                                                 if (model!
                                                                         .status ==
                                                                     true) {
+                                                                  setState(() {
+                                                                    progress =
+                                                                        false;
+                                                                  });
                                                                   showToast(
                                                                       "Updated");
                                                                 } else {}
@@ -604,7 +653,9 @@ class NoItem extends StatelessWidget {
                                                   children: [
                                                     Container(
                                                       height: height * .2,
-                                                      child: CustomImage(url: prod.imgUrl,),
+                                                      child: CustomImage(
+                                                        url: prod.imgUrl,
+                                                      ),
                                                     ),
                                                     ListTile(
                                                       dense: true,

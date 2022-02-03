@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sell_beta_customer/Api/api-repo/api.dart';
 import 'package:sell_beta_customer/Api/model/add_address_model.dart';
@@ -22,9 +23,10 @@ class CreateOrderPage extends StatefulWidget {
   final addressId;
   final page;
   final price;
+  final selectedProduct;
 
   const CreateOrderPage(
-      {Key? key, this.addressId, this.page, this.createOrderData, this.price})
+      {Key? key, this.addressId, this.page, this.createOrderData, this.price, this.selectedProduct})
       : super(key: key);
 
   @override
@@ -384,6 +386,136 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                 title: Text("Payment"),
                 content: Column(
                   children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      itemCount: widget.selectedProduct.length,
+                      itemBuilder:
+                          (BuildContext context, int index) {
+                        var item = widget.selectedProduct[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Card(
+                            elevation: 3,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(
+                                      horizontal: 13,
+                                      vertical: 11),
+                                  child: item.productList
+                                      .thumbImage !=
+                                      "" &&
+                                      item.productList
+                                          .thumbImage !=
+                                          null
+                                      ? Container(
+                                    height: 98,
+                                    width: 98,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: NetworkImage(item
+                                                .productList
+                                                .thumbImage)),
+                                        border: Border.all(
+                                            color: Colors
+                                                .grey),
+                                        borderRadius:
+                                        BorderRadius
+                                            .all(Radius
+                                            .circular(
+                                            10))),
+                                  )
+                                      : Container(
+                                    height: 98,
+                                    width: 98,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                "images/sample/no_image.jpg")),
+                                        border: Border.all(
+                                            color: Colors
+                                                .grey),
+                                        borderRadius:
+                                        BorderRadius
+                                            .all(Radius
+                                            .circular(
+                                            10))),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ListTile(
+                                        minVerticalPadding: 0,
+                                        title: Text(
+                                          "${item.productList.title}"
+                                              .toUpperCase(),
+                                          style: GoogleFonts.inter(
+                                              fontSize: 14,
+                                              fontWeight:
+                                              FontWeight.w600),
+                                        ),
+                                        subtitle: Text(
+                                          "Size - ${item.size} Brands:${item.productList.brandName}",
+                                          style: GoogleFonts.inter(
+                                              fontSize: 12,
+                                              fontWeight:
+                                              FontWeight.w400,
+                                              color: Color(
+                                                  0xffC4C4C4)),
+                                          maxLines: 1,
+                                        ),
+                                      ),
+                                      ListTile(
+                                        dense: true,
+                                        title: Text("Seller Name : ${item.vendorShopName}" , style: TextStyle(fontSize: 10),),
+                                      ),
+                                      // ListTile(
+                                      //   dense: true,
+                                      //   title: Text(
+                                      //     "Color - ${item.color}",
+                                      //     style: GoogleFonts.inter(
+                                      //         fontWeight:
+                                      //         FontWeight.w600,
+                                      //         fontSize: 10),
+                                      //   ),
+                                      //   subtitle: Row(
+                                      //     mainAxisAlignment:
+                                      //     MainAxisAlignment
+                                      //         .spaceBetween,
+                                      //     children: [
+                                      //       Text(
+                                      //         "${item.productList.salePriceCurrency ?? ""} ${double.parse(item.productList.salePrice)}",
+                                      //         style: GoogleFonts.inter(
+                                      //             fontWeight:
+                                      //             FontWeight
+                                      //                 .w700,
+                                      //             color: Color(
+                                      //                 0xffF15741)),
+                                      //       ),
+                                      //       Text("QTY : ${item.quantity}")
+                                      //     ],
+                                      //   ),
+                                      // )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Card(child: ListTile(title: Text("Price Details"))),
+                    ListTile(
+                      dense: true,
+                      title: Text("Total Price"),
+                      trailing: Text(widget.price.toString()),
+                    ),
+                    Divider(),
                     ListTile(
                       title: Text(
                         "Payment Type",
@@ -493,12 +625,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                             ),
                           )
                         : Container(),
-                    Card(child: ListTile(title: Text("Price Details"))),
-                    ListTile(
-                      dense: true,
-                      title: Text("Total Price"),
-                      trailing: Text(widget.price.toString()),
-                    )
+
+
                   ],
                 )),
             Step(
