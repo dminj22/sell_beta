@@ -318,6 +318,7 @@ class _LoginPageState extends State<LoginPage> {
                                     CustomButtons(
                                       color: [
                                         Color(0xffF15741),
+
                                         Color(0xffF29F46)
                                       ],
                                       text: "Sign In",
