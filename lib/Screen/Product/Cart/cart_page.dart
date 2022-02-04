@@ -228,19 +228,16 @@ class _CartPageState extends State<CartPage> {
                                               builder: (context) =>
                                                   CreateOrderPage(
                                                     createOrderData:
-                                                    multiDelete,
+                                                        multiDelete,
                                                     price: totalPrice,
                                                     selectedProduct:
-                                                    selectedProduct,
+                                                        selectedProduct,
                                                   )));
                                     } else {
                                       showToast("Select Product");
                                     }
                                   },
-                                  color: [
-                                    Color(0xffF15741),
-                                    Color(0xffF29F46)
-                                  ],
+                                  color: [Color(0xffF15741), Color(0xffF29F46)],
                                   text: "Check Out",
                                 ),
                               ),
@@ -387,6 +384,7 @@ class _CartPageState extends State<CartPage> {
                                                     title: Text(
                                                       "${item.productList.title}"
                                                           .toUpperCase(),
+                                                      maxLines: 2,
                                                       style: GoogleFonts.inter(
                                                           fontSize: 14,
                                                           fontWeight:
@@ -445,7 +443,8 @@ class _CartPageState extends State<CartPage> {
                                                                       .clear();
                                                                   selectedProduct
                                                                       .clear();
-                                                                  selectPrice.clear();
+                                                                  selectPrice
+                                                                      .clear();
                                                                   selectItem = snapshot
                                                                       .data.data
                                                                       .map((i) =>
@@ -457,34 +456,43 @@ class _CartPageState extends State<CartPage> {
                                                               }
 
                                                               if (newChange) {
-                                                try{                showLoading(context);
-                                                var cartId =
-                                                    "${data[index].cartId}";
-                                                var quantity =
-                                                    "${itemNo[index]}";
-                                                var newPrice =
-                                                    "${double.parse(item.productList.salePrice) * itemNo[index]}";
-                                                CartUpdateQuantityModel?
-                                                model =
-                                                await updateCartQuantity(
-                                                    cartId,
-                                                    quantity,
-                                                    newPrice);
-                                                if (model!
-                                                    .status ==
-                                                    true) {
-                                                  setState(() {
-                                                    Navigator.pop(context);
-                                                    progress =
-                                                    false;
-                                                  });
-                                                  showToast(
-                                                      "Updated");
-                                                } else {
-                                                  Navigator.pop(context);
-                                                }}catch(e){
-                                                  Navigator.pop(context);
-                                                }
+                                                                try {
+                                                                  showLoading(
+                                                                      context);
+                                                                  var cartId =
+                                                                      "${data[index].cartId}";
+                                                                  var quantity =
+                                                                      "${itemNo[index]}";
+                                                                  var newPrice =
+                                                                      "${double.parse(item.productList.salePrice) * itemNo[index]}";
+                                                                  CartUpdateQuantityModel?
+                                                                      model =
+                                                                      await updateCartQuantity(
+                                                                          cartId,
+                                                                          quantity,
+                                                                          newPrice);
+                                                                  if (model!
+                                                                          .status ==
+                                                                      true) {
+                                                                    setState(
+                                                                        () {
+                                                                      progress =
+                                                                          false;
+                                                                    });
+
+                                                                    showToast(
+                                                                        "Updated");
+                                                                    Future.delayed(Duration(seconds: 2), (){
+                                                                      Navigator.pop(context);
+                                                                    });
+                                                                  } else {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  }
+                                                                } catch (e) {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                }
                                                               }
                                                             },
                                                             child: ImageIcon(
@@ -505,7 +513,8 @@ class _CartPageState extends State<CartPage> {
                                                                     .clear();
                                                                 selectedProduct
                                                                     .clear();
-                                                                selectPrice.clear();
+                                                                selectPrice
+                                                                    .clear();
                                                                 selectItem = snapshot
                                                                     .data.data
                                                                     .map((i) =>
@@ -515,34 +524,41 @@ class _CartPageState extends State<CartPage> {
                                                                     true;
                                                               });
                                                               if (newChange) {
-                                               try{                 showLoading(context);
-                                               var cartId =
-                                                   "${data[index].cartId}";
-                                               var quantity =
-                                                   "${itemNo[index]}";
-                                               var newPrice =
-                                                   "${double.parse(item.productList.salePrice) * itemNo[index]}";
-                                               CartUpdateQuantityModel?
-                                               model =
-                                               await updateCartQuantity(
-                                                   cartId,
-                                                   quantity,
-                                                   newPrice);
-                                               if (model!
-                                                   .status ==
-                                                   true) {
-                                                 setState(() {
-                                                   Navigator.pop(context);
-                                                   progress =
-                                                   false;
-                                                 });
-                                                 showToast(
-                                                     "Updated");
-                                               } else {
-                                                 Navigator.pop(context);
-                                               }}catch(e){
-                                                 Navigator.pop(context);
-                                               }
+                                                                try {
+                                                                  showLoading(
+                                                                      context);
+                                                                  var cartId =
+                                                                      "${data[index].cartId}";
+                                                                  var quantity =
+                                                                      "${itemNo[index]}";
+                                                                  var newPrice =
+                                                                      "${double.parse(item.productList.salePrice) * itemNo[index]}";
+                                                                  CartUpdateQuantityModel?
+                                                                      model =
+                                                                      await updateCartQuantity(
+                                                                          cartId,
+                                                                          quantity,
+                                                                          newPrice);
+                                                                  if (model!
+                                                                          .status ==
+                                                                      true) {
+                                                                    showToast(
+                                                                        "Updated");
+                                                                    setState(
+                                                                        () {
+                                                                    });
+                                                                    Future.delayed(Duration(seconds: 2), (){
+                                                                      Navigator.pop(context);
+                                                                    });
+
+                                                                  } else {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  }
+                                                                } catch (e) {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                }
                                                               }
                                                             },
                                                             child: ImageIcon(

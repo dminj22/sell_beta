@@ -717,7 +717,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                           ),
                           title: Text("Thank You for shopping with us"),
                           subtitle: Text(
-                              "Order Code : ${_model.data![0].orderCode}"),
+                              "Order Code : ${_model.data![0].orderCode}\nOrder Date : ${_model.data![0].orderDate}"),
                         ),
                         Divider(),
                         ListView.builder(
